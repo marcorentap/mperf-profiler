@@ -1,1 +1,0 @@
-/usr/lib/ccache/cc -fPIC -shared -Wl,-soname,libCPIProfiler.so -o libCPIProfiler.so CMakeFiles/CPIProfiler.dir/cpi_profiler.c.o 

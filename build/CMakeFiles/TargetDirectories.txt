@@ -1,4 +1,0 @@
-/home/marcorentap/projects/kokkos-cpi-profiler/build/CMakeFiles/kp_cpi.dir
-/home/marcorentap/projects/kokkos-cpi-profiler/build/CMakeFiles/main.dir
-/home/marcorentap/projects/kokkos-cpi-profiler/build/CMakeFiles/edit_cache.dir
-/home/marcorentap/projects/kokkos-cpi-profiler/build/CMakeFiles/rebuild_cache.dir
