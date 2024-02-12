@@ -1,0 +1,28 @@
+[
+  {
+    "arguments": [
+      "/usr/lib/ccache/cc",
+      "-Dkp_cpi_EXPORTS",
+      "-fPIC",
+      "-c",
+      "-o",
+      "CMakeFiles/kp_cpi.dir/cpi_profiler.c.o",
+      "/home/marcorentap/projects/kokkos-cpi-profiler/cpi_profiler.c"
+    ],
+    "directory": "/home/marcorentap/projects/kokkos-cpi-profiler/build",
+    "file": "/home/marcorentap/projects/kokkos-cpi-profiler/cpi_profiler.c",
+    "output": "/home/marcorentap/projects/kokkos-cpi-profiler/build/CMakeFiles/kp_cpi.dir/cpi_profiler.c.o"
+  },
+  {
+    "arguments": [
+      "/usr/lib/ccache/cc",
+      "-c",
+      "-o",
+      "CMakeFiles/main.dir/main.c.o",
+      "/home/marcorentap/projects/kokkos-cpi-profiler/main.c"
+    ],
+    "directory": "/home/marcorentap/projects/kokkos-cpi-profiler/build",
+    "file": "/home/marcorentap/projects/kokkos-cpi-profiler/main.c",
+    "output": "/home/marcorentap/projects/kokkos-cpi-profiler/build/CMakeFiles/main.dir/main.c.o"
+  }
+]
