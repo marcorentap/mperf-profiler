@@ -106,11 +106,22 @@ extern "C" void kokkosp_init_library(const int loadSeq,
 }
 
 extern "C" void kokkosp_finalize_library() {
+    double IPCsum = 0, CPIsum = 0;
+    double IPCavg, CPIavg;
+
     for (auto &measure : regionMeasures) {
-        printf("Region %s, CPI %lf IPC %lf\n", std::get<0>(measure).c_str(),
-               std::get<1>(measure), std::get<2>(measure));
+        std::string regionName = std::get<0>(measure);
+        double CPI = std::get<1>(measure);
+        double IPC = std::get<2>(measure);
+        CPIsum += CPI;
+        IPCsum += IPC;
+        printf("Region %s: CPI %lf IPC %lf\n", regionName.c_str(), CPI, IPC);
     }
-    // TODO: Print average CPI, IPC
+
+    CPIavg = CPIsum / regionMeasures.size();
+    IPCavg = IPCsum / regionMeasures.size();
+    printf("Average CPI: %lf\n Average IPC: %lf\n", CPIavg, IPCavg);
+
     delete cpiProfiler;
 }
 

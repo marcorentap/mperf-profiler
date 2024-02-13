@@ -6,5 +6,5 @@ CXX_DEFINES = -DKOKKOS_DEPENDENCE -Dkp_cpi_EXPORTS
 
 CXX_INCLUDES = -isystem /usr/local/cuda/include
 
-CXX_FLAGS = -g -fPIC -extended-lambda -Wext-lambda-captures-this -expt-relaxed-constexpr -arch=sm_75 -std=c++17
+CXX_FLAGS = -g -fPIC -extended-lambda -Wext-lambda-captures-this -expt-relaxed-constexpr -arch=sm_61 -std=c++17
 

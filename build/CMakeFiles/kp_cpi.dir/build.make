@@ -95,7 +95,7 @@ libkp_cpi.so: CMakeFiles/kp_cpi.dir/build.make
 libkp_cpi.so: /usr/local/lib/libkokkoscontainers.a
 libkp_cpi.so: /usr/local/lib/libkokkoscore.a
 libkp_cpi.so: /usr/lib/x86_64-linux-gnu/libhwloc.so
-libkp_cpi.so: /usr/lib/wsl/lib/libcuda.so
+libkp_cpi.so: /usr/lib/x86_64-linux-gnu/libcuda.so
 libkp_cpi.so: /usr/local/cuda/lib64/libcudart.so
 libkp_cpi.so: /usr/local/lib/libkokkossimd.a
 libkp_cpi.so: CMakeFiles/kp_cpi.dir/link.txt
