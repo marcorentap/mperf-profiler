@@ -109,6 +109,10 @@ extern "C" void kokkosp_finalize_library() {
     double IPCsum = 0, CPIsum = 0;
     double IPCavg, CPIavg;
 
+    if (regionMeasures.size() <= 0) {
+        delete cpiProfiler;
+        return;
+    }
     for (auto &measure : regionMeasures) {
         std::string regionName = std::get<0>(measure);
         double CPI = std::get<1>(measure);
