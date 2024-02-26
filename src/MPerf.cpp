@@ -87,7 +87,7 @@ void MPerf::ReadEndValues() {
   }
 }
 
-// Read start value of one measure
+// Read end value of one measure
 void MPerf::ReadEndValue(PerfMeasureType type) {
   auto &measure = measureMap[type];
   int ret = read(measure.fd, &measure.readEnd, sizeof(measure.readEnd));
