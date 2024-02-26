@@ -47,20 +47,14 @@ MPerf::MPerf() {
       exit(EXIT_FAILURE);
     }
 
-    measureMap[i] = measure;
+    measureMap[(PerfMeasureType) i] = measure;
   }
 }
 
 // Read start value of all measures
 void MPerf::ReadStartValues() {
   for (auto &entry : measureMap) {
-    auto &measure = entry.second;
-    int ret = read(measure.fd, &measure.readStart, sizeof(measure.readStart));
-    if (ret < 0) {
-      std::cerr << "cannot read starting value of measure " << entry.first
-                << std::endl;
-      exit(EXIT_FAILURE);
-    }
+      ReadEndValue(entry.first);
   }
 }
 
@@ -77,13 +71,7 @@ void MPerf::ReadStartValue(PerfMeasureType type) {
 // Read end value of all measures
 void MPerf::ReadEndValues() {
   for (auto &entry : measureMap) {
-    auto &measure = entry.second;
-    int ret = read(measure.fd, &measure.readEnd, sizeof(measure.readEnd));
-    if (ret < 0) {
-      std::cerr << "cannot read ending value of measure " << entry.first
-                << std::endl;
-      exit(EXIT_FAILURE);
-    }
+      ReadEndValue(entry.first);
   }
 }
 

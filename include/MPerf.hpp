@@ -64,7 +64,7 @@ private:
       NPerfMeasureType
     };
 
-  std::unordered_map<int, PerfMeasure> measureMap;
+  std::unordered_map<PerfMeasureType, PerfMeasure> measureMap;
 
 public:
   MPerf();
