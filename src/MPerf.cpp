@@ -1,4 +1,3 @@
-#include <MPerf.hpp>
 #include <asm/unistd_64.h>
 #include <cstdio>
 #include <cstdlib>
@@ -8,6 +7,7 @@
 #include <type_traits>
 #include <unistd.h>
 #include <vector>
+#include <MPerf.hpp>
 
 static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
                             int cpu, int group_fd, unsigned long flags) {
@@ -19,15 +19,6 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
 
 namespace MPerf {
 MPerf::MPerf() {
-  // For now, only measure CPI and IPC of all core
-  std::vector<PerfEventAttr> attributes(PerfMeasureType::NPerfMeasureType);
-  attributes[PerfMeasureType::InstCount] = {
-      PerfAttrType::PERF_TYPE_HARDWARE,
-      PerfAttrConfig::PERF_COUNT_HW_INSTRUCTIONS};
-  attributes[PerfMeasureType::CycleCount] = {
-      PerfAttrType::PERF_TYPE_HARDWARE,
-      PerfAttrConfig::PERF_COUNT_HW_CPU_CYCLES};
-
   // Open events
   for (int i = 0; i < PerfMeasureType::NPerfMeasureType; i++) {
     struct PerfMeasure measure;
@@ -35,7 +26,7 @@ MPerf::MPerf() {
     memset(&attr, 0, sizeof(attr));
     memset(&measure, 0, sizeof(measure));
 
-    auto attribute = attributes[i];
+    auto attribute = attrs[i];
     measure.attribute = attribute;
 
     attr.type = attribute.type;
@@ -47,14 +38,14 @@ MPerf::MPerf() {
       exit(EXIT_FAILURE);
     }
 
-    measureMap[(PerfMeasureType) i] = measure;
+    measureMap[(PerfMeasureType)i] = measure;
   }
 }
 
 // Read start value of all measures
 void MPerf::ReadStartValues() {
   for (auto &entry : measureMap) {
-      ReadEndValue(entry.first);
+    ReadEndValue(entry.first);
   }
 }
 
@@ -71,7 +62,7 @@ void MPerf::ReadStartValue(PerfMeasureType type) {
 // Read end value of all measures
 void MPerf::ReadEndValues() {
   for (auto &entry : measureMap) {
-      ReadEndValue(entry.first);
+    ReadEndValue(entry.first);
   }
 }
 

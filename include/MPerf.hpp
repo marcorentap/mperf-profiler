@@ -64,6 +64,14 @@ private:
       NPerfMeasureType
     };
 
+  // For now, only measure CPI and IPC of all core
+  std::vector<PerfEventAttr> attrs{
+      {PerfAttrType::PERF_TYPE_HARDWARE,
+       PerfAttrConfig::PERF_COUNT_HW_INSTRUCTIONS},
+      {PerfAttrType::PERF_TYPE_HARDWARE,
+       PerfAttrConfig::PERF_COUNT_HW_CPU_CYCLES},
+  };
+
   std::unordered_map<PerfMeasureType, PerfMeasure> measureMap;
 
 public:
