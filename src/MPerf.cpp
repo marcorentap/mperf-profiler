@@ -1,3 +1,4 @@
+#include <MPerf.hpp>
 #include <asm/unistd_64.h>
 #include <cstdio>
 #include <cstdlib>
@@ -7,7 +8,6 @@
 #include <type_traits>
 #include <unistd.h>
 #include <vector>
-#include <MPerf.hpp>
 
 static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
                             int cpu, int group_fd, unsigned long flags) {
@@ -76,7 +76,7 @@ void MPerf::ReadEndValue(PerfMeasureType type) {
   }
 }
 
-double MPerf::GetCPI() {
+template <typename T> T MPerf::GetCPI() {
   auto instMeasure = measureMap[PerfMeasureType::InstCount];
   auto cycleMeasure = measureMap[PerfMeasureType::CycleCount];
 
@@ -87,10 +87,10 @@ double MPerf::GetCPI() {
 
   auto instDiff = instEnd - instStart;
   auto cycleDiff = cycleEnd - cycleStart;
-  return (double)cycleDiff / instDiff;
+  return (T)cycleDiff / instDiff;
 }
 
-double MPerf::GetIPC() {
+template <typename T> T MPerf::GetIPC() {
 
   auto instMeasure = measureMap[PerfMeasureType::InstCount];
   auto cycleMeasure = measureMap[PerfMeasureType::CycleCount];
@@ -102,7 +102,7 @@ double MPerf::GetIPC() {
 
   auto instDiff = instEnd - instStart;
   auto cycleDiff = cycleEnd - cycleStart;
-  return (double)instDiff / cycleDiff;
+  return (T)instDiff / cycleDiff;
 }
 
 }; // namespace MPerf

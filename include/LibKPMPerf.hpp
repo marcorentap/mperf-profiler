@@ -1,9 +1,9 @@
 #include <MPerf.hpp>
-#include <stack>
-#include <string>
-#include <memory>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
+#include <memory>
+#include <stack>
+#include <string>
 
 extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint64_t interfaceVer,
@@ -13,8 +13,7 @@ extern "C" void kokkosp_init_library(const int loadSeq,
 extern "C" void kokkosp_finalize_library();
 
 extern "C" void kokkosp_begin_parallel_for(const char *name,
-                                           const uint32_t devID,
-                                           uint64_t *kID);
+                                           const uint32_t devID, uint64_t *kID);
 
 extern "C" void kokkosp_end_parallel_for(const uint64_t kID);
 

@@ -1,12 +1,13 @@
-#include <cstdint>
 #include <linux/perf_event.h>
-#include <vector>
+
+#include <cstdint>
 #include <unordered_map>
+#include <vector>
 
 namespace MPerf {
 
 class MPerf {
-private:
+ private:
   enum PerfAttrConfig {
     PERF_COUNT_HW_CPU_CYCLES,
     PERF_COUNT_HW_INSTRUCTIONS,
@@ -58,11 +59,7 @@ private:
     ReadFormat readEnd;
   };
 
-  enum PerfMeasureType {
-      InstCount,
-      CycleCount,
-      NPerfMeasureType
-    };
+  enum PerfMeasureType { InstCount, CycleCount, NPerfMeasureType };
 
   // For now, only measure CPI and IPC of all core
   std::vector<PerfEventAttr> attrs{
@@ -74,7 +71,7 @@ private:
 
   std::unordered_map<PerfMeasureType, PerfMeasure> measureMap;
 
-public:
+ public:
   MPerf();
   void ReadStartValues();
   void ReadStartValue(PerfMeasureType type);
@@ -82,8 +79,10 @@ public:
   void ReadEndValues();
   void ReadEndValue(PerfMeasureType type);
 
-  double GetCPI();
+  template <typename T>
+  T GetCPI();
 
-  double GetIPC();
+  template <typename T>
+  T GetIPC();
 };
-} // namespace CPI
+}  // namespace MPerf
