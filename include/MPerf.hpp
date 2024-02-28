@@ -1,88 +1,38 @@
+#ifndef MPERF_HPP
+#define MPERF_HPP
 #include <linux/perf_event.h>
 
+#include <Dummy.hpp>
+#include <HWLoc.hpp>
+#include <LinuxPerf.hpp>
+#include <Measure.hpp>
 #include <cstdint>
+#include <memory>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
 namespace MPerf {
+enum class SubsystemType { Dummy, LinuxPerf, HWLoc };
 
 class MPerf {
+  using LinuxPerfMeasure = Subsystem::LinuxPerf::Measure;
+  using HWLocMeasure = Subsystem::HWLoc::Measure;
+  using DummyMeasure = Subsystem::Dummy::Measure;
+  using MType = MeasureType;
+  using MPulse = MeasurePulse;
+  using SType = SubsystemType;
+
  private:
-  enum PerfAttrConfig {
-    PERF_COUNT_HW_CPU_CYCLES,
-    PERF_COUNT_HW_INSTRUCTIONS,
-    PERF_COUNT_HW_CACHE_REFERENCES,
-    PERF_COUNT_HW_CACHE_MISSES,
-    PERF_COUNT_HW_BRANCH_INSTRUCTIONS,
-    PERF_COUNT_HW_BRANCH_MISSES,
-    PERF_COUNT_HW_BUS_CYCLES,
-    PERF_COUNT_HW_STALLED_CYCLES_FRONTEND,
-    PERF_COUNT_HW_STALLED_CYCLES_BACKEND,
-    PERF_COUNT_HW_REF_CPU_CYCLES,
-    PERF_COUNT_SW_CPU_CLOCK,
-    PERF_COUNT_SW_TASK_CLOCK,
-    PERF_COUNT_SW_PAGE_FAULTS,
-    PERF_COUNT_SW_CONTEXT_SWITCHES,
-    PERF_COUNT_SW_CPU_MIGRATIONS,
-    PERF_COUNT_SW_PAGE_FAULTS_MIN,
-    PERF_COUNT_SW_PAGE_FAULTS_MAJ,
-    PERF_COUNT_SW_ALIGNMENT_FAULTS,
-    PERF_COUNT_SW_EMULATION_FAULTS,
-    PERF_COUNT_SW_DUMMY
+  std::vector<std::tuple<SType, MType, MPulse>> _measures = {
+      {SType::Dummy, MType::DummyMeasure, MPulse::InitLibrary},
+      {SType::LinuxPerf, MType::LinuxPerfCPI, MPulse::InitLibrary},
+      {SType::HWLoc, MType::HWLOCSystemInfo, MPulse::InitLibrary},
   };
-
-  enum PerfAttrType {
-    PERF_TYPE_HARDWARE,
-    PERF_TYPE_SOFTWARE,
-    PERF_TYPE_TRACEPOINT,
-    PERF_TYPE_HW_CACHE,
-    PERF_TYPE_RAW,
-    PERF_TYPE_BREAKPOINT
-  };
-
-  struct PerfEventAttr {
-    PerfAttrType type;
-    PerfAttrConfig config;
-  };
-
-  struct ReadFormat {
-    uint64_t value;        /* The value of the event */
-    uint64_t time_enabled; /* if PERF_FORMAT_TOTAL_TIME_ENABLED */
-    uint64_t time_running; /* if PERF_FORMAT_TOTAL_TIME_RUNNING */
-    uint64_t id;           /* if PERF_FORMAT_ID */
-  };
-
-  struct PerfMeasure {
-    PerfEventAttr attribute;
-    int fd;
-    ReadFormat readStart;
-    ReadFormat readEnd;
-  };
-
-  enum PerfMeasureType { InstCount, CycleCount, NPerfMeasureType };
-
-  // For now, only measure CPI and IPC of all core
-  std::vector<PerfEventAttr> attrs{
-      {PerfAttrType::PERF_TYPE_HARDWARE,
-       PerfAttrConfig::PERF_COUNT_HW_INSTRUCTIONS},
-      {PerfAttrType::PERF_TYPE_HARDWARE,
-       PerfAttrConfig::PERF_COUNT_HW_CPU_CYCLES},
-  };
-
-  std::unordered_map<PerfMeasureType, PerfMeasure> measureMap;
+  std::vector<std::shared_ptr<Measure>> measures;
 
  public:
   MPerf();
-  void ReadStartValues();
-  void ReadStartValue(PerfMeasureType type);
-
-  void ReadEndValues();
-  void ReadEndValue(PerfMeasureType type);
-
-  template <typename T>
-  T GetCPI();
-
-  template <typename T>
-  T GetIPC();
 };
 }  // namespace MPerf
+#endif

@@ -5,13 +5,13 @@
 // Region Name, CPI, IPC
 std::stack<std::string> regionNameStack;
 std::vector<std::tuple<std::string, double, double>> regionMeasures;
-std::unique_ptr<MPerf::MPerf> mperf;
+std::unique_ptr<MPerf::LinuxPerf> mperf;
 
 extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint64_t interfaceVer,
                                      const uint32_t /*devInfoCount*/,
                                      void * /*deviceInfo*/) {
-  mperf.reset(new MPerf::MPerf());
+  mperf.reset(new MPerf::LinuxPerf());
 }
 
 extern "C" void kokkosp_finalize_library() {
@@ -84,3 +84,5 @@ extern "C" void kokkosp_begin_deep_copy(
     Kokkos::Profiling::SpaceHandle dst_handle, const char *dst_name,
     const void *dst_ptr, Kokkos::Profiling::SpaceHandle src_handle,
     const char *src_name, const void *src_ptr, uint64_t size) {}
+
+extern "C" void kokkosp_end_deep_copy() {}

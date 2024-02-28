@@ -1,3 +1,5 @@
+#ifndef LIBKPMPERF_HPP
+#define LIBKPMPERF_HPP
 #include <MPerf.hpp>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
@@ -50,3 +52,5 @@ extern "C" void kokkosp_begin_deep_copy(
     Kokkos::Profiling::SpaceHandle dst_handle, const char *dst_name,
     const void *dst_ptr, Kokkos::Profiling::SpaceHandle src_handle,
     const char *src_name, const void *src_ptr, uint64_t size);
+
+#endif
