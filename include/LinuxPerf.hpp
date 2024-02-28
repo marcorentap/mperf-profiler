@@ -13,8 +13,6 @@ namespace MPerf {
 namespace Subsystem {
 namespace LinuxPerf {
 
-
-
 struct PerfEventAttr {
   uint64_t type;
   uint64_t config;
@@ -37,7 +35,11 @@ struct PerfMeasure {
 class Measure : public ::MPerf::Measure {
  private:
   std::vector<int> fds;
-  std::queue<ReadFormat> data;
+  // Each fd has a deque that can act as a
+  // queue (for begin/end measures) or a stack (for whole measures)
+  std::unordered_map<int, std::deque<ReadFormat>> data;
+  uint64_t result;
+  void ReadAllFd();
 
  public:
   Measure(MeasureType type, MeasurePulse pulse)
@@ -46,7 +48,9 @@ class Measure : public ::MPerf::Measure {
   ~Measure();
 
   void Init();
-  void ReadValues();
+  void DoMeasure();
+  void DoNextMeasure();
+  void WriteResult(std::shared_ptr<void> dest, size_t len);
 };
 
 }  // namespace LinuxPerf

@@ -45,7 +45,13 @@ std::vector<std::shared_ptr<Measure>>& MPerf::PulseMeasures(
 }
 void MPerf::PulseReadValues(MPulse mPulse) {
     for (auto &measure : PulseMeasures(mPulse)) {
-      measure->ReadValues();
+      measure->ReadValue();
+    }
+}
+
+void MPerf::PulseReadNextValues(MPulse mPulse) {
+    for (auto &measure : PulseMeasures(mPulse)) {
+      measure->ReadNextValue();
     }
 }
 

@@ -15,6 +15,7 @@
 namespace MPerf {
 enum class SubsystemType { Dummy, LinuxPerf, HWLoc };
 
+
 class MPerf {
   using LinuxPerfMeasure = Subsystem::LinuxPerf::Measure;
   using HWLocMeasure = Subsystem::HWLoc::Measure;
@@ -34,11 +35,13 @@ class MPerf {
   };
   std::vector<std::shared_ptr<Measure>> measures;
   std::unordered_map<MPulse, std::vector<std::shared_ptr<Measure>>> measuresByPulse;
+  std::unordered_map<SType, std::unordered_map<MType, std::unordered_map<MPulse, Measure>>> measuresMap;
 
  public:
   MPerf();
   std::vector<std::shared_ptr<Measure>>& PulseMeasures(MPulse mPulse);
   void PulseReadValues(MPulse mPulse);
+  void PulseReadNextValues(MPulse mPulse);
 };
 }  // namespace MPerf
 #endif

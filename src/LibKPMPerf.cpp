@@ -18,20 +18,24 @@ extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint32_t /*devInfoCount*/,
                                      void * /*deviceInfo*/) {
   mperf.PulseReadValues(MPulse::InitLibrary);
+  mperf.PulseReadValues(MPulse::WholeLibrary);
 }
 
 extern "C" void kokkosp_finalize_library() {
   mperf.PulseReadValues(MPulse::FinalizeLibrary);
+  mperf.PulseReadNextValues(MPulse::WholeLibrary);
 }
 
 extern "C" void kokkosp_begin_parallel_for(const char *name,
                                            const uint32_t devID,
                                            uint64_t *kID) {
   mperf.PulseReadValues(MPulse::BeginParFor);
+  mperf.PulseReadValues(MPulse::WholeParFor);
 }
 
 extern "C" void kokkosp_end_parallel_for(const uint64_t kID) {
   mperf.PulseReadValues(MPulse::EndParFor);
+  mperf.PulseReadNextValues(MPulse::WholeParFor);
 }
 
 extern "C" void kokkosp_begin_parallel_scan(const char *name,
@@ -43,7 +47,7 @@ extern "C" void kokkosp_begin_parallel_scan(const char *name,
 
 extern "C" void kokkospk_end_parallel_scan(const uint64_t kID) {
   mperf.PulseReadValues(MPulse::EndParScan);
-  mperf.PulseReadValues(MPulse::WholeParScan);
+  mperf.PulseReadNextValues(MPulse::WholeParScan);
 }
 
 extern "C" void kokkosp_begin_parallel_reduce(const char *name,
@@ -55,7 +59,7 @@ extern "C" void kokkosp_begin_parallel_reduce(const char *name,
 
 extern "C" void kokkosp_end_parallel_reduce(const uint64_t kID) {
   mperf.PulseReadValues(MPulse::EndParReduce);
-  mperf.PulseReadValues(MPulse::WholeParReduce);
+  mperf.PulseReadNextValues(MPulse::WholeParReduce);
 }
 
 extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
@@ -66,7 +70,7 @@ extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
 
 extern "C" void kokkosp_end_fence(const uint64_t kID) {
   mperf.PulseReadValues(MPulse::EndParFence);
-  mperf.PulseReadValues(MPulse::WholeParFence);
+  mperf.PulseReadNextValues(MPulse::WholeParFence);
 }
 
 extern "C" void kokkosp_push_profile_region(char *regionName) {
@@ -76,7 +80,7 @@ extern "C" void kokkosp_push_profile_region(char *regionName) {
 
 extern "C" void kokkosp_pop_profile_region() {
   mperf.PulseReadValues(MPulse::PopProfileRegion);
-  mperf.PulseReadValues(MPulse::WholeProfileRegion);
+  mperf.PulseReadNextValues(MPulse::WholeProfileRegion);
 }
 
 extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
@@ -90,7 +94,7 @@ extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
                                         const char *name, void *ptr,
                                         uint64_t size) {
   mperf.PulseReadValues(MPulse::DeallocateData);
-  mperf.PulseReadValues(MPulse::WholeData);
+  mperf.PulseReadNextValues(MPulse::WholeData);
 }
 
 extern "C" void kokkosp_begin_deep_copy(
@@ -103,5 +107,5 @@ extern "C" void kokkosp_begin_deep_copy(
 
 extern "C" void kokkosp_end_deep_copy() {
   mperf.PulseReadValues(MPulse::EndDeepCopy);
-  mperf.PulseReadValues(MPulse::WholeDeepCopy);
+  mperf.PulseReadNextValues(MPulse::WholeDeepCopy);
 }

@@ -23,23 +23,21 @@ namespace LinuxPerf {
 void InitCPI() {
   int fd;
   struct perf_event_attr attr;
-  auto CycleConfig = PerfEventAttr{.type = PERF_TYPE_HARDWARE,
-                                   .config = PERF_COUNT_HW_CPU_CYCLES};
-  auto InstConfig = PerfEventAttr{.type = PERF_TYPE_HARDWARE,
-                                  .config = PERF_COUNT_HW_INSTRUCTIONS};
 
+  // Create fd for CPU cycles
   memset(&attr, 0, sizeof(attr));
-  attr.config = CycleConfig.config;
-  attr.type = CycleConfig.type;
+  attr.config = PERF_COUNT_HW_CPU_CYCLES;
+  attr.type = PERF_TYPE_HARDWARE;
   fd = perf_event_open(&attr, getpid(), -1, -1, 0);
   if (fd < 0) {
     perror("cannot open fd for CPU cycles");
     exit(EXIT_FAILURE);
   }
 
+  // Create fd for instruction count
   memset(&attr, 0, sizeof(attr));
-  attr.config = InstConfig.config;
-  attr.type = InstConfig.type;
+  attr.config = PERF_COUNT_HW_INSTRUCTIONS;
+  attr.type = PERF_TYPE_HARDWARE;
   fd = perf_event_open(&attr, getpid(), -1, -1, 0);
   if (fd < 0) {
     perror("cannot open fd for instruction count");
@@ -49,12 +47,38 @@ void InitCPI() {
 
 void Measure::Init() {
   std::cout << "Initialize LinuxPerf Measure" << std::endl;
-  if (type == MeasureType::LinuxPerfCPI) {
-    InitCPI();
+  switch (type) {
+    case MeasureType::LinuxPerfCPI:
+      InitCPI();
+      break;
+    default:
+      break;
   }
 }
-void Measure::ReadValues() {
+
+void Measure::ReadAllFd() {
+  for (auto &fd : fds) {
+    struct ReadFormat readFormat;
+    read(fd, &readFormat, sizeof(readFormat));
+    data[fd].push_back(readFormat);
+  }
+}
+
+void Measure::DoMeasure() {
   std::cout << "LinuxPerf Read Values" << std::endl;
+  ReadAllFd();
+}
+
+void Measure::DoNextMeasure() {
+  for (auto &fd : fds) {
+    struct ReadFormat readFormat;
+    read(fd, &readFormat, sizeof(readFormat));
+    data[fd].push_back(readFormat);
+  }
+}
+
+void Measure::WriteResult(std::shared_ptr<void> dest, size_t len) {
+    std::memcpy(dest.get(), &result, len);
 }
 
 Measure::~Measure() {

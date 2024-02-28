@@ -38,7 +38,9 @@ class Measure {
   MeasurePulse pulse;
   Measure(MeasureType type, MeasurePulse pulse) : type(type), pulse(pulse) {}
   virtual void Init() { std::cout << "Default Measure Init" << std::endl; }
-  virtual void ReadValues() {}
+  virtual void ReadValue() { std::cout << "Default ReadValue" << std::endl;}
+  virtual void ReadNextValue() { std::cout << "Default ReadNextValue" << std::endl;}
+  virtual void WriteResult(std::shared_ptr<void> dest, size_t len) { std::cout << "Default WriteResult" << std::endl;};
 };
 }  // namespace MPerf
 #endif

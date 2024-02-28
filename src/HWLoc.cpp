@@ -14,7 +14,8 @@ namespace MPerf {
 namespace Subsystem {
 namespace HWLoc {
 void Measure::Init() { std::cout << "Initialize HWLoc Measure" << std::endl; }
-void Measure::ReadValues() { std::cout << "HWLoc Read Values" << std::endl; }
+void Measure::DoMeasure() { std::cout << "HWLoc Read Value" << std::endl; }
+void Measure::DoNextMeasure() { std::cout << "HWLoc Read Next Value" << std::endl; }
 }  // namespace HWLoc
 }  // namespace Subsystem
 }  // namespace MPerf
