@@ -54,4 +54,6 @@ extern "C" void kokkosp_begin_deep_copy(
     const void *dst_ptr, Kokkos::Profiling::SpaceHandle src_handle,
     const char *src_name, const void *src_ptr, uint64_t size);
 
+extern "C" void kokkosp_end_deep_copy();
+
 #endif
