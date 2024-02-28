@@ -48,7 +48,7 @@ void InitCPI() {
 void Measure::Init() {
   std::cout << "Initialize LinuxPerf Measure" << std::endl;
   switch (type) {
-    case MeasureType::LinuxPerfCPI:
+    case MeasureType::LinuxPerf:
       InitCPI();
       break;
     default:

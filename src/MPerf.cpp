@@ -15,22 +15,22 @@
 
 namespace MPerf {
 MPerf::MPerf() {
-  enum measureEntry { SType, MType, MPulse };
+  enum measureEntry { MType, MPulse };
   // Initialize all predefined measures
-  for (auto& _measure : _measures) {
-    auto sType = std::get<SType>(_measure);
-    auto mType = std::get<MType>(_measure);
-    auto mPulse = std::get<MPulse>(_measure);
-    std::shared_ptr<Measure> ptr;
+  for (auto& mapEntry : _measures) {
+    auto measureSetting = mapEntry.second;
+    auto mType = std::get<MType>(measureSetting);
+    auto mPulse = std::get<MPulse>(measureSetting);
 
-    switch (sType) {
-      case SubsystemType::Dummy:
+    std::shared_ptr<Measure> ptr;
+    switch (mType) {
+      case MeasureType::Dummy:
         ptr.reset(new DummyMeasure(mType, mPulse));
         break;
-      case SubsystemType::LinuxPerf:
+      case MeasureType::LinuxPerf:
         ptr.reset(new LinuxPerfMeasure(mType, mPulse));
         break;
-      case SubsystemType::HWLoc:
+      case MeasureType::HWLoc:
         ptr.reset(new HWLocMeasure(mType, mPulse));
         break;
     }
@@ -43,15 +43,15 @@ std::vector<std::shared_ptr<Measure>>& MPerf::PulseMeasures(
     MeasurePulse mPulse) {
   return measuresByPulse[mPulse];
 }
-void MPerf::PulseReadValues(MPulse mPulse) {
+void MPerf::PulseDoMeasure(MPulse mPulse) {
     for (auto &measure : PulseMeasures(mPulse)) {
-      measure->ReadValue();
+      measure->DoMeasure();
     }
 }
 
-void MPerf::PulseReadNextValues(MPulse mPulse) {
+void MPerf::PulseDoNextMeasure(MPulse mPulse) {
     for (auto &measure : PulseMeasures(mPulse)) {
-      measure->ReadNextValue();
+      measure->DoNextMeasure();
     }
 }
 

@@ -15,7 +15,6 @@ int main(int argc, char *argv[]) {
   using Measure = MPerf::Measure;
   using MType = MPerf::MeasureType;
   using MPulse = MPerf::MeasurePulse;
-  using SType = MPerf::SubsystemType;
   auto mperf = MPerf::MPerf();
 
   auto wholeRegionMeasures = mperf.PulseMeasures(MPulse::WholeProfileRegion);

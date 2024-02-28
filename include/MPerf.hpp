@@ -13,35 +13,31 @@
 #include <vector>
 
 namespace MPerf {
-enum class SubsystemType { Dummy, LinuxPerf, HWLoc };
-
 
 class MPerf {
   using LinuxPerfMeasure = Subsystem::LinuxPerf::Measure;
   using HWLocMeasure = Subsystem::HWLoc::Measure;
   using DummyMeasure = Subsystem::Dummy::Measure;
+  using HLType = HLMeasureType;
   using MType = MeasureType;
   using MPulse = MeasurePulse;
-  using SType = SubsystemType;
 
  private:
-  std::vector<std::tuple<SType, MType, MPulse>> _measures = {
-      {SType::Dummy, MType::DummyMeasure, MPulse::InitLibrary},
-      {SType::LinuxPerf, MType::LinuxPerfCPI, MPulse::WholeProfileRegion},
-      {SType::HWLoc, MType::HWLOCSystemInfo, MPulse::InitLibrary},
-      {SType::Dummy, MType::DummyMeasure, MPulse::FinalizeLibrary},
-      {SType::LinuxPerf, MType::LinuxPerfCPI, MPulse::WholeParScan},
-      {SType::HWLoc, MType::HWLOCSystemInfo, MPulse::FinalizeLibrary},
+  std::unordered_map<HLMeasureType, std::tuple<MType, MPulse>> _measures = {
+      {HLType::InitDummy, {MType::Dummy, MPulse::InitLibrary}},
+      {HLType::RegionCPI, {MType::LinuxPerf, MPulse::WholeProfileRegion}},
+      {HLType::LibraryCPI, {MType::LinuxPerf, MPulse::WholeLibrary}},
+      {HLType::SystemInfo, {MType::HWLoc, MPulse::InitLibrary}},
   };
   std::vector<std::shared_ptr<Measure>> measures;
-  std::unordered_map<MPulse, std::vector<std::shared_ptr<Measure>>> measuresByPulse;
-  std::unordered_map<SType, std::unordered_map<MType, std::unordered_map<MPulse, Measure>>> measuresMap;
+  std::unordered_map<MPulse, std::vector<std::shared_ptr<Measure>>>
+      measuresByPulse;
 
  public:
   MPerf();
   std::vector<std::shared_ptr<Measure>>& PulseMeasures(MPulse mPulse);
-  void PulseReadValues(MPulse mPulse);
-  void PulseReadNextValues(MPulse mPulse);
+  void PulseDoMeasure(MPulse mPulse);
+  void PulseDoNextMeasure(MPulse mPulse);
 };
 }  // namespace MPerf
 #endif
