@@ -39,9 +39,14 @@ MPerf::MPerf() {
     measuresByPulse[mPulse].push_back(ptr);
   }
 }
-std::vector<std::shared_ptr<Measure>>& MPerf::GetMeasuresByPulse(
+std::vector<std::shared_ptr<Measure>>& MPerf::PulseMeasures(
     MeasurePulse mPulse) {
   return measuresByPulse[mPulse];
+}
+void MPerf::PulseReadValues(MPulse mPulse) {
+    for (auto &measure : PulseMeasures(mPulse)) {
+      measure->ReadValues();
+    }
 }
 
 };  // namespace MPerf

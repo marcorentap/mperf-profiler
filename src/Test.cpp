@@ -2,6 +2,11 @@
 #include <Dummy.hpp>
 #include <Measure.hpp>
 
+template <typename... Ts>
+int func(Ts... args) {
+  std::cout << "func" <<std::endl;
+  return 0;
+}
 
 int main(int argc, char *argv[]) {
   using LinuxPerfMeasure = MPerf::Subsystem::LinuxPerf::Measure;
@@ -13,8 +18,8 @@ int main(int argc, char *argv[]) {
   using SType = MPerf::SubsystemType;
   auto mperf = MPerf::MPerf();
 
-  auto wholeRegionMeasures = mperf.GetMeasuresByPulse(MPulse::WholeProfileRegion);
-  auto initLibraryMeasures = mperf.GetMeasuresByPulse(MPulse::InitLibrary);
+  auto wholeRegionMeasures = mperf.PulseMeasures(MPulse::WholeProfileRegion);
+  auto initLibraryMeasures = mperf.PulseMeasures(MPulse::InitLibrary);
 
   std::cout << "Whole Region Measures" << std::endl;
   for (auto &region : wholeRegionMeasures) {
@@ -24,5 +29,8 @@ int main(int argc, char *argv[]) {
   for (auto &region : initLibraryMeasures) {
     region->Init();
   }
+
+  func(1,2,3,4);
+  func('a',true);
   return 0;
 }

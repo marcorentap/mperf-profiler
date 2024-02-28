@@ -28,13 +28,17 @@ class MPerf {
       {SType::Dummy, MType::DummyMeasure, MPulse::InitLibrary},
       {SType::LinuxPerf, MType::LinuxPerfCPI, MPulse::WholeProfileRegion},
       {SType::HWLoc, MType::HWLOCSystemInfo, MPulse::InitLibrary},
+      {SType::Dummy, MType::DummyMeasure, MPulse::FinalizeLibrary},
+      {SType::LinuxPerf, MType::LinuxPerfCPI, MPulse::WholeParScan},
+      {SType::HWLoc, MType::HWLOCSystemInfo, MPulse::FinalizeLibrary},
   };
   std::vector<std::shared_ptr<Measure>> measures;
   std::unordered_map<MPulse, std::vector<std::shared_ptr<Measure>>> measuresByPulse;
 
  public:
   MPerf();
-  std::vector<std::shared_ptr<Measure>>& GetMeasuresByPulse(MPulse mPulse);
+  std::vector<std::shared_ptr<Measure>>& PulseMeasures(MPulse mPulse);
+  void PulseReadValues(MPulse mPulse);
 };
 }  // namespace MPerf
 #endif

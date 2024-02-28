@@ -1,5 +1,6 @@
 #ifndef LIBKPMPERF_HPP
 #define LIBKPMPERF_HPP
+#include <impl/Kokkos_Profiling_C_Interface.h>
 #include <MPerf.hpp>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
