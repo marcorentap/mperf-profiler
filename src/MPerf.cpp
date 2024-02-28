@@ -16,8 +16,8 @@
 namespace MPerf {
 MPerf::MPerf() {
   enum measureEntry { SType, MType, MPulse };
-  // Initialize all measures
-  for (auto &_measure : _measures) {
+  // Initialize all predefined measures
+  for (auto& _measure : _measures) {
     auto sType = std::get<SType>(_measure);
     auto mType = std::get<MType>(_measure);
     auto mPulse = std::get<MPulse>(_measure);
@@ -36,7 +36,12 @@ MPerf::MPerf() {
     }
     ptr->Init();
     measures.push_back(ptr);
+    measuresByPulse[mPulse].push_back(ptr);
   }
+}
+std::vector<std::shared_ptr<Measure>>& MPerf::GetMeasuresByPulse(
+    MeasurePulse mPulse) {
+  return measuresByPulse[mPulse];
 }
 
 };  // namespace MPerf

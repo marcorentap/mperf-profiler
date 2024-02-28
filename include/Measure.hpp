@@ -38,6 +38,7 @@ class Measure {
   MeasurePulse pulse;
   Measure(MeasureType type, MeasurePulse pulse) : type(type), pulse(pulse) {}
   virtual void Init() { std::cout << "Default Measure Init" << std::endl; }
+  virtual void ReadValues() {}
 };
 }  // namespace MPerf
 #endif

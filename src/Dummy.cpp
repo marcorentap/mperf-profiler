@@ -14,6 +14,7 @@ namespace MPerf {
 namespace Subsystem {
 namespace Dummy {
 void Measure::Init() { std::cout << "Initialize Dummy Measure" << std::endl; }
+void Measure::ReadValues() { std::cout << "Dummy Read Values" << std::endl; }
 }  // namespace Dummy
 }  // namespace Subsystem
 }  // namespace MPerf

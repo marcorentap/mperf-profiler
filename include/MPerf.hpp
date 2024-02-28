@@ -26,13 +26,15 @@ class MPerf {
  private:
   std::vector<std::tuple<SType, MType, MPulse>> _measures = {
       {SType::Dummy, MType::DummyMeasure, MPulse::InitLibrary},
-      {SType::LinuxPerf, MType::LinuxPerfCPI, MPulse::InitLibrary},
+      {SType::LinuxPerf, MType::LinuxPerfCPI, MPulse::WholeProfileRegion},
       {SType::HWLoc, MType::HWLOCSystemInfo, MPulse::InitLibrary},
   };
   std::vector<std::shared_ptr<Measure>> measures;
+  std::unordered_map<MPulse, std::vector<std::shared_ptr<Measure>>> measuresByPulse;
 
  public:
   MPerf();
+  std::vector<std::shared_ptr<Measure>>& GetMeasuresByPulse(MPulse mPulse);
 };
 }  // namespace MPerf
 #endif

@@ -19,6 +19,7 @@ class Measure : public ::MPerf::Measure {
   Measure(MeasureType type, MeasurePulse pulse)
       : ::MPerf::Measure(type, pulse) {}
   void Init();
+  void ReadValues();
 };
 
 }  // namespace Dummy

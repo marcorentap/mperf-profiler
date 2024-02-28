@@ -1,17 +1,17 @@
 #include <LibKPMPerf.hpp>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
+#include "MPerf.hpp"
 
 // Region Name, CPI, IPC
 std::stack<std::string> regionNameStack;
 std::vector<std::tuple<std::string, double, double>> regionMeasures;
-std::unique_ptr<MPerf::LinuxPerf> mperf;
+MPerf::MPerf mperf;
 
 extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint64_t interfaceVer,
                                      const uint32_t /*devInfoCount*/,
                                      void * /*deviceInfo*/) {
-  mperf.reset(new MPerf::LinuxPerf());
 }
 
 extern "C" void kokkosp_finalize_library() {

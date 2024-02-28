@@ -20,6 +20,7 @@ class Measure : public ::MPerf::Measure {
       : ::MPerf::Measure(type, pulse) {}
 
   void Init();
+  void ReadValues();
 };
 
 }  // namespace HWLoc
