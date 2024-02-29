@@ -3,6 +3,7 @@
 #include <Measure.hpp>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
+#include <Json.hpp>
 
 // Region Name, CPI, IPC
 std::stack<std::string> regionNameStack;
@@ -13,6 +14,19 @@ using Measure = MPerf::Measure;
 using MType = MPerf::MeasureType;
 using MPulse = MPerf::MeasurePulse;
 using HLType = MPerf::HLMeasureType;
+using json = nlohmann::json;
+
+std::stringstream PrintMPulseMeasures(MPulse mPulse, json patch, bool flush=true) {
+  std::stringstream ss;
+  auto mPulseMeasures = mperf.PulseMeasures(mPulse);
+  for (auto &measure : mPulseMeasures) {
+    auto j = measure->GetJSON();
+    j.merge_patch(patch);
+    ss << j << "\n";
+  }
+
+  return ss;
+}
 
 extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint64_t interfaceVer,
@@ -70,24 +84,27 @@ extern "C" void kokkosp_end_fence(const uint64_t kID) {
 }
 
 extern "C" void kokkosp_push_profile_region(char *regionName) {
-  mperf.PulseDoMeasure(MPulse::PushProfileRegion);
-  mperf.PulseDoMeasure(MPulse::WholeProfileRegion);
+  json patch;
   auto regionNameStr = std::string(regionName);
   regionNameStack.push(regionName);
+  patch["regionName"] = regionName;
 
-  auto j = mperf.GetMeasure(HLType::LinuxPerfProc)->GetJSON();
-  j["regionName"] = "Begin Profile Region: " + regionNameStr;
-  std::cout << j << "\n";
+  mperf.PulseDoMeasure(MPulse::PushProfileRegion);
+  mperf.PulseDoMeasure(MPulse::WholeProfileRegion);
+  std::cout << PrintMPulseMeasures(MPulse::PushProfileRegion, patch).str();
+  std::cout << PrintMPulseMeasures(MPulse::WholeProfileRegion, patch).str();
 }
 
 extern "C" void kokkosp_pop_profile_region() {
-  auto mCPI = mperf.GetMeasure(HLType::LinuxPerfProc);
-  mperf.PulseDoMeasure(MPulse::PopProfileRegion);
+  json patch;
+  auto regionNameStr = regionNameStack.top();
+  regionNameStack.pop();
+  patch["regionName"] = regionNameStr;
 
-  auto regionName = regionNameStack.top();
-  auto j = mperf.GetMeasure(HLType::LinuxPerfProc)->GetJSON();
-  j["regionName"] = "Begin Profile Region " + regionName;
-  std::cout << j << "\n";
+  mperf.PulseDoMeasure(MPulse::PopProfileRegion);
+  mperf.PulseDoMeasure(MPulse::WholeProfileRegion);
+  std::cout << PrintMPulseMeasures(MPulse::PopProfileRegion, patch).str();
+  std::cout << PrintMPulseMeasures(MPulse::WholeProfileRegion, patch).str();
 }
 
 extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,

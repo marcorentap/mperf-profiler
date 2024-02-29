@@ -8,6 +8,7 @@
 #include <queue>
 #include <unordered_map>
 #include <vector>
+#include <unistd.h>
 
 namespace MPerf {
 namespace Subsystem {
@@ -45,14 +46,22 @@ class Measure : public ::MPerf::Measure {
   Measure(HLMeasureType hlType, MeasureType type, MeasurePulse pulse)
       : ::MPerf::Measure(hlType, type, pulse) {}
 
-  ~Measure();
+  ~Measure() {
+          for (auto &fd : fds) {
+            close(fd);
+          }
+        }
 
-  virtual void Init();
-  virtual void DoMeasure();
-  virtual void DoNextMeasure();
-  virtual void WriteResult(void *dest, size_t len);
-  virtual void WriteResult(std::shared_ptr<void> dest, size_t len);
-  virtual json GetJSON();
+  virtual void Init() {}
+  virtual void DoMeasure() {}
+  virtual void DoNextMeasure() {}
+  virtual void WriteResult(void *dest, size_t len) {}
+  virtual void WriteResult(std::shared_ptr<void> dest, size_t len) {}
+  virtual json GetJSON() {
+    json j;
+    j["name"] = "Linux Perf Measure";
+    return j;
+  }
 };
 
 class ProcMeasure : public Measure {
