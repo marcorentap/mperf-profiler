@@ -42,16 +42,39 @@ class Measure : public ::MPerf::Measure {
   void ReadAllFd();
 
  public:
-  Measure(MeasureType type, MeasurePulse pulse)
-      : ::MPerf::Measure(type, pulse) {}
+  Measure(HLMeasureType hlType, MeasureType type, MeasurePulse pulse)
+      : ::MPerf::Measure(hlType, type, pulse) {}
 
   ~Measure();
 
+  virtual void Init();
+  virtual void DoMeasure();
+  virtual void DoNextMeasure();
+  virtual void WriteResult(void *dest, size_t len);
+  virtual void WriteResult(std::shared_ptr<void> dest, size_t len);
+  virtual json GetJSON();
+};
+
+class ProcMeasure : public Measure {
+ private:
+  // TODO: Derive read_format depend on Init() instead of manually here
+  struct read_format {
+    uint64_t nr;
+    uint64_t instCount;
+    uint64_t cycleCount;
+  } result;
+  int leader_fd;
+
+ public:
+  ProcMeasure(HLMeasureType hlType, MeasureType type, MeasurePulse pulse)
+      : Measure(hlType, type, pulse) {}
   void Init();
   void DoMeasure();
-  void DoNextMeasure();
-  void WriteResult(std::shared_ptr<void> dest, size_t len);
+  json GetJSON();
 };
+
+std::unique_ptr<Measure> MakeMeasure(HLMeasureType hlType, MeasureType type,
+                                     MeasurePulse pulse);
 
 }  // namespace LinuxPerf
 

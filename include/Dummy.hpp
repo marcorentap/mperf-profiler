@@ -16,13 +16,14 @@ class Measure : public ::MPerf::Measure {
   int nproc;
 
  public:
-  Measure(MeasureType type, MeasurePulse pulse)
-      : ::MPerf::Measure(type, pulse) {}
+  Measure(HLMeasureType hlType, MeasureType type, MeasurePulse pulse)
+      : ::MPerf::Measure(hlType, type, pulse) {}
   void Init();
   void DoMeasure();
   void DoNextMeasure();
 };
 
+std::unique_ptr<Measure> MakeMeasure(HLMeasureType hlType, MeasureType type, MeasurePulse pulse);
 }  // namespace Dummy
 
 }  // namespace Subsystem

@@ -24,12 +24,12 @@ class MPerf {
 
  private:
   std::unordered_map<HLMeasureType, std::tuple<MType, MPulse>> _measures = {
-      {HLType::InitDummy, {MType::Dummy, MPulse::InitLibrary}},
-      {HLType::RegionCPI, {MType::LinuxPerf, MPulse::WholeProfileRegion}},
-      {HLType::LibraryCPI, {MType::LinuxPerf, MPulse::WholeLibrary}},
-      {HLType::SystemInfo, {MType::HWLoc, MPulse::InitLibrary}},
+      // {HLType::InitDummy, {MType::Dummy, MPulse::InitLibrary}},
+      {HLType::LinuxPerfProc, {MType::LinuxPerf, MPulse::WholeProfileRegion}},
+      // {HLType::LibraryCPI, {MType::LinuxPerf, MPulse::WholeLibrary}},
+      // {HLType::SystemInfo, {MType::HWLoc, MPulse::InitLibrary}},
   };
-  std::vector<std::shared_ptr<Measure>> measures;
+  std::unordered_map<HLType, std::shared_ptr<Measure>> measures;
   std::unordered_map<MPulse, std::vector<std::shared_ptr<Measure>>>
       measuresByPulse;
 
@@ -38,6 +38,7 @@ class MPerf {
   std::vector<std::shared_ptr<Measure>>& PulseMeasures(MPulse mPulse);
   void PulseDoMeasure(MPulse mPulse);
   void PulseDoNextMeasure(MPulse mPulse);
+  std::shared_ptr<Measure> GetMeasure(HLMeasureType HLType);
 };
 }  // namespace MPerf
 #endif

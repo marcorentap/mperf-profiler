@@ -16,14 +16,20 @@ class Measure : public ::MPerf::Measure {
   int nproc;
 
  public:
-  Measure(MeasureType type, MeasurePulse pulse)
-      : ::MPerf::Measure(type, pulse) {}
+  Measure(HLMeasureType hlType, MeasureType type, MeasurePulse pulse)
+      : ::MPerf::Measure(hlType, type, pulse) {}
 
   void Init();
   void DoMeasure();
   void DoNextMeasure();
+  json GetJSON() {
+    json j;
+    j["name"] = "HWLoc Measure";
+    return j;
+  }
 };
 
+std::unique_ptr<Measure> MakeMeasure(HLMeasureType hlType, MeasureType type, MeasurePulse pulse);
 }  // namespace HWLoc
 
 }  // namespace Subsystem

@@ -1,35 +1,35 @@
-#include <MPerf.hpp>
 #include <Dummy.hpp>
+#include <MPerf.hpp>
 #include <Measure.hpp>
+#include <iostream>
+
+#include "LinuxPerf.hpp"
 
 template <typename... Ts>
 int func(Ts... args) {
-  std::cout << "func" <<std::endl;
+  std::cout << "func" << std::endl;
   return 0;
 }
 
+using LinuxPerfMeasure = MPerf::Subsystem::LinuxPerf::Measure;
+using HWLocMeasure = MPerf::Subsystem::HWLoc::Measure;
+using DummyMeasure = MPerf::Subsystem::Dummy::Measure;
+using HLType = MPerf::HLMeasureType;
+using MType = MPerf::MeasureType;
+using MPulse = MPerf::MeasurePulse;
+
 int main(int argc, char *argv[]) {
-  using LinuxPerfMeasure = MPerf::Subsystem::LinuxPerf::Measure;
-  using HWLocMeasure = MPerf::Subsystem::HWLoc::Measure;
-  using DummyMeasure = MPerf::Subsystem::Dummy::Measure;
-  using Measure = MPerf::Measure;
-  using MType = MPerf::MeasureType;
-  using MPulse = MPerf::MeasurePulse;
-  auto mperf = MPerf::MPerf();
-
-  auto wholeRegionMeasures = mperf.PulseMeasures(MPulse::WholeProfileRegion);
-  auto initLibraryMeasures = mperf.PulseMeasures(MPulse::InitLibrary);
-
-  std::cout << "Whole Region Measures" << std::endl;
-  for (auto &region : wholeRegionMeasures) {
-    region->Init();
+  auto measure = MPerf::Subsystem::LinuxPerf::MakeMeasure(
+      HLType::LinuxPerfProc, MType::LinuxPerf, MPulse::WholeProfileRegion);
+  measure->Init();
+  measure->DoMeasure();
+  std::cout << measure->GetJSON() << "\n";
+  for (int i = 0; i < 1000; i++) {
+    printf("X\n");
   }
-  std::cout << "Init Library Measures" << std::endl;
-  for (auto &region : initLibraryMeasures) {
-    region->Init();
-  }
+  measure->DoMeasure();
+  std::cout << measure->GetJSON() << "\n";
 
-  func(1,2,3,4);
-  func('a',true);
+  std::cout << std::flush;
   return 0;
 }

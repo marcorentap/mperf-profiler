@@ -1,5 +1,6 @@
 #include <LibKPMPerf.hpp>
 #include <MPerf.hpp>
+#include <Measure.hpp>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
 
@@ -11,6 +12,7 @@ MPerf::MPerf mperf;
 using Measure = MPerf::Measure;
 using MType = MPerf::MeasureType;
 using MPulse = MPerf::MeasurePulse;
+using HLType = MPerf::HLMeasureType;
 
 extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint64_t interfaceVer,
@@ -22,7 +24,6 @@ extern "C" void kokkosp_init_library(const int loadSeq,
 
 extern "C" void kokkosp_finalize_library() {
   mperf.PulseDoMeasure(MPulse::FinalizeLibrary);
-  mperf.PulseDoNextMeasure(MPulse::WholeLibrary);
 }
 
 extern "C" void kokkosp_begin_parallel_for(const char *name,
@@ -34,7 +35,6 @@ extern "C" void kokkosp_begin_parallel_for(const char *name,
 
 extern "C" void kokkosp_end_parallel_for(const uint64_t kID) {
   mperf.PulseDoMeasure(MPulse::EndParFor);
-  mperf.PulseDoNextMeasure(MPulse::WholeParFor);
 }
 
 extern "C" void kokkosp_begin_parallel_scan(const char *name,
@@ -46,7 +46,6 @@ extern "C" void kokkosp_begin_parallel_scan(const char *name,
 
 extern "C" void kokkospk_end_parallel_scan(const uint64_t kID) {
   mperf.PulseDoMeasure(MPulse::EndParScan);
-  mperf.PulseDoNextMeasure(MPulse::WholeParScan);
 }
 
 extern "C" void kokkosp_begin_parallel_reduce(const char *name,
@@ -58,7 +57,6 @@ extern "C" void kokkosp_begin_parallel_reduce(const char *name,
 
 extern "C" void kokkosp_end_parallel_reduce(const uint64_t kID) {
   mperf.PulseDoMeasure(MPulse::EndParReduce);
-  mperf.PulseDoNextMeasure(MPulse::WholeParReduce);
 }
 
 extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
@@ -69,17 +67,27 @@ extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
 
 extern "C" void kokkosp_end_fence(const uint64_t kID) {
   mperf.PulseDoMeasure(MPulse::EndParFence);
-  mperf.PulseDoNextMeasure(MPulse::WholeParFence);
 }
 
 extern "C" void kokkosp_push_profile_region(char *regionName) {
   mperf.PulseDoMeasure(MPulse::PushProfileRegion);
   mperf.PulseDoMeasure(MPulse::WholeProfileRegion);
+  auto regionNameStr = std::string(regionName);
+  regionNameStack.push(regionName);
+
+  auto j = mperf.GetMeasure(HLType::LinuxPerfProc)->GetJSON();
+  j["regionName"] = "Begin Profile Region: " + regionNameStr;
+  std::cout << j << "\n";
 }
 
 extern "C" void kokkosp_pop_profile_region() {
+  auto mCPI = mperf.GetMeasure(HLType::LinuxPerfProc);
   mperf.PulseDoMeasure(MPulse::PopProfileRegion);
-  mperf.PulseDoNextMeasure(MPulse::WholeProfileRegion);
+
+  auto regionName = regionNameStack.top();
+  auto j = mperf.GetMeasure(HLType::LinuxPerfProc)->GetJSON();
+  j["regionName"] = "Begin Profile Region " + regionName;
+  std::cout << j << "\n";
 }
 
 extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
@@ -93,7 +101,6 @@ extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
                                         const char *name, void *ptr,
                                         uint64_t size) {
   mperf.PulseDoMeasure(MPulse::DeallocateData);
-  mperf.PulseDoNextMeasure(MPulse::WholeData);
 }
 
 extern "C" void kokkosp_begin_deep_copy(
@@ -106,5 +113,4 @@ extern "C" void kokkosp_begin_deep_copy(
 
 extern "C" void kokkosp_end_deep_copy() {
   mperf.PulseDoMeasure(MPulse::EndDeepCopy);
-  mperf.PulseDoNextMeasure(MPulse::WholeDeepCopy);
 }
