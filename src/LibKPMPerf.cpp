@@ -8,6 +8,7 @@
 // Region Name, CPI, IPC
 std::stack<std::string> regionNameStack;
 std::vector<std::tuple<std::string, double, double>> regionMeasures;
+auto &outStream = std::cout;
 MPerf::MPerf mperf;
 
 using Measure = MPerf::Measure;
@@ -91,8 +92,8 @@ extern "C" void kokkosp_push_profile_region(char *regionName) {
 
   mperf.PulseDoMeasure(MPulse::PushProfileRegion);
   mperf.PulseDoMeasure(MPulse::WholeProfileRegion);
-  std::cout << PrintMPulseMeasures(MPulse::PushProfileRegion, patch).str();
-  std::cout << PrintMPulseMeasures(MPulse::WholeProfileRegion, patch).str();
+  outStream << PrintMPulseMeasures(MPulse::PushProfileRegion, patch).str();
+  outStream << PrintMPulseMeasures(MPulse::WholeProfileRegion, patch).str();
 }
 
 extern "C" void kokkosp_pop_profile_region() {
@@ -103,8 +104,8 @@ extern "C" void kokkosp_pop_profile_region() {
 
   mperf.PulseDoMeasure(MPulse::PopProfileRegion);
   mperf.PulseDoMeasure(MPulse::WholeProfileRegion);
-  std::cout << PrintMPulseMeasures(MPulse::PopProfileRegion, patch).str();
-  std::cout << PrintMPulseMeasures(MPulse::WholeProfileRegion, patch).str();
+  outStream << PrintMPulseMeasures(MPulse::PopProfileRegion, patch).str();
+  outStream << PrintMPulseMeasures(MPulse::WholeProfileRegion, patch).str();
 }
 
 extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
