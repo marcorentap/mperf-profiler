@@ -4,12 +4,7 @@
 #include <Measure.hpp>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
-
-// Region Name, CPI, IPC
-std::stack<std::string> regionNameStack;
-std::vector<std::tuple<std::string, double, double>> regionMeasures;
-auto &outStream = std::cout;
-MPerf::MPerf mperf;
+#include <fstream>
 
 using Measure = MPerf::Measure;
 using MType = MPerf::MeasureType;
@@ -17,9 +12,19 @@ using MPulse = MPerf::MeasurePulse;
 using HLType = MPerf::HLMeasureType;
 using json = nlohmann::json;
 
+constexpr auto outputFileName = "mperf.json";
+
+// Region Name, CPI, IPC
+std::stack<std::string> regionNameStack;
+std::vector<std::tuple<std::string, double, double>> regionMeasures;
+MPerf::MPerf mperf;
+std::ofstream outputFile;
+json rootJson;
+
+
 // TODO: Use name stack for parfence, parfor, parscan, etc.
 
-std::stringstream PrintMPulseMeasures(MPulse mPulse, json patch = nullptr,
+void PrintMPulseMeasures(MPulse mPulse, json patch = nullptr,
                                       bool flush = true) {
   std::stringstream ss;
   auto mPulseMeasures = mperf.PulseMeasures(mPulse);
@@ -28,10 +33,8 @@ std::stringstream PrintMPulseMeasures(MPulse mPulse, json patch = nullptr,
     if (patch != nullptr) {
       j.merge_patch(patch);
     }
-    ss << j << "\n";
+    rootJson.push_back(j);
   }
-
-  return ss;
 }
 
 extern "C" void kokkosp_init_library(const int loadSeq,
@@ -39,19 +42,24 @@ extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint32_t devInfoCount,
                                      void *deviceInfo) {
   json patch;
+  // TODO: Add deviceInfo
   patch["loadSeq"] = loadSeq;
   patch["interfaceVer"] = interfaceVer;
   patch["devInfoCount"] = devInfoCount;
-  // TODO: Add deviceInfo
+
+  outputFile.open(outputFileName, std::ofstream::trunc);
+
   mperf.PulseDoMeasure(MPulse::InitLibrary);
   mperf.PulseDoMeasure(MPulse::WholeLibrary);
-  outStream << PrintMPulseMeasures(MPulse::InitLibrary, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::InitLibrary, patch).str();
+  PrintMPulseMeasures(MPulse::InitLibrary, patch);
+  PrintMPulseMeasures(MPulse::InitLibrary, patch);
 }
 
 extern "C" void kokkosp_finalize_library() {
   mperf.PulseDoMeasure(MPulse::FinalizeLibrary);
-  outStream << PrintMPulseMeasures(MPulse::FinalizeLibrary).str();
+  PrintMPulseMeasures(MPulse::FinalizeLibrary);
+
+  outputFile << rootJson << std::endl;
 }
 
 extern "C" void kokkosp_begin_parallel_for(const char *name,
@@ -64,8 +72,8 @@ extern "C" void kokkosp_begin_parallel_for(const char *name,
 
   mperf.PulseDoMeasure(MPulse::BeginParFor);
   mperf.PulseDoMeasure(MPulse::WholeParFor);
-  outStream << PrintMPulseMeasures(MPulse::BeginParFor, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeParFor, patch).str();
+  PrintMPulseMeasures(MPulse::BeginParFor, patch);
+  PrintMPulseMeasures(MPulse::WholeParFor, patch);
 }
 
 extern "C" void kokkosp_end_parallel_for(const uint64_t kID) {
@@ -73,7 +81,7 @@ extern "C" void kokkosp_end_parallel_for(const uint64_t kID) {
   patch["kID"] = kID;
 
   mperf.PulseDoMeasure(MPulse::EndParFor);
-  outStream << PrintMPulseMeasures(MPulse::EndParFor, patch).str();
+  PrintMPulseMeasures(MPulse::EndParFor, patch);
 }
 
 extern "C" void kokkosp_begin_parallel_scan(const char *name,
@@ -86,8 +94,8 @@ extern "C" void kokkosp_begin_parallel_scan(const char *name,
 
   mperf.PulseDoMeasure(MPulse::BeginParScan);
   mperf.PulseDoMeasure(MPulse::WholeParScan);
-  outStream << PrintMPulseMeasures(MPulse::BeginParScan, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeParScan, patch).str();
+  PrintMPulseMeasures(MPulse::BeginParScan, patch);
+  PrintMPulseMeasures(MPulse::WholeParScan, patch);
 }
 
 extern "C" void kokkospk_end_parallel_scan(const uint64_t kID) {
@@ -96,8 +104,8 @@ extern "C" void kokkospk_end_parallel_scan(const uint64_t kID) {
 
   mperf.PulseDoMeasure(MPulse::EndParScan);
   mperf.PulseDoMeasure(MPulse::WholeParScan);
-  outStream << PrintMPulseMeasures(MPulse::EndParScan, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeParScan, patch).str();
+  PrintMPulseMeasures(MPulse::EndParScan, patch);
+  PrintMPulseMeasures(MPulse::WholeParScan, patch);
 }
 
 extern "C" void kokkosp_begin_parallel_reduce(const char *name,
@@ -111,8 +119,8 @@ extern "C" void kokkosp_begin_parallel_reduce(const char *name,
   mperf.PulseDoMeasure(MPulse::BeginParReduce);
   mperf.PulseDoMeasure(MPulse::WholeParReduce);
 
-  outStream << PrintMPulseMeasures(MPulse::BeginParReduce, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeParReduce, patch).str();
+  PrintMPulseMeasures(MPulse::BeginParReduce, patch);
+  PrintMPulseMeasures(MPulse::WholeParReduce, patch);
 }
 
 extern "C" void kokkosp_end_parallel_reduce(const uint64_t kID) {
@@ -121,8 +129,8 @@ extern "C" void kokkosp_end_parallel_reduce(const uint64_t kID) {
 
   mperf.PulseDoMeasure(MPulse::EndParReduce);
   mperf.PulseDoMeasure(MPulse::WholeParReduce);
-  outStream << PrintMPulseMeasures(MPulse::EndParReduce, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeParReduce, patch).str();
+  PrintMPulseMeasures(MPulse::EndParReduce, patch);
+  PrintMPulseMeasures(MPulse::WholeParReduce, patch);
 }
 
 extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
@@ -134,8 +142,8 @@ extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
 
   mperf.PulseDoMeasure(MPulse::BeginParFence);
   mperf.PulseDoMeasure(MPulse::WholeParFence);
-  outStream << PrintMPulseMeasures(MPulse::BeginParFence, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeParFence, patch).str();
+  PrintMPulseMeasures(MPulse::BeginParFence, patch);
+  PrintMPulseMeasures(MPulse::WholeParFence, patch);
 }
 
 extern "C" void kokkosp_end_fence(const uint64_t kID) {
@@ -145,8 +153,8 @@ extern "C" void kokkosp_end_fence(const uint64_t kID) {
   mperf.PulseDoMeasure(MPulse::EndParFence);
   mperf.PulseDoMeasure(MPulse::WholeParFence);
 
-  outStream << PrintMPulseMeasures(MPulse::EndParFence, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeParFence, patch).str();
+  PrintMPulseMeasures(MPulse::EndParFence, patch);
+  PrintMPulseMeasures(MPulse::WholeParFence, patch);
 }
 
 extern "C" void kokkosp_push_profile_region(char *regionName) {
@@ -157,8 +165,8 @@ extern "C" void kokkosp_push_profile_region(char *regionName) {
 
   mperf.PulseDoMeasure(MPulse::PushProfileRegion);
   mperf.PulseDoMeasure(MPulse::WholeProfileRegion);
-  outStream << PrintMPulseMeasures(MPulse::PushProfileRegion, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeProfileRegion, patch).str();
+  PrintMPulseMeasures(MPulse::PushProfileRegion, patch);
+  PrintMPulseMeasures(MPulse::WholeProfileRegion, patch);
 }
 
 extern "C" void kokkosp_pop_profile_region() {
@@ -169,8 +177,8 @@ extern "C" void kokkosp_pop_profile_region() {
 
   mperf.PulseDoMeasure(MPulse::PopProfileRegion);
   mperf.PulseDoMeasure(MPulse::WholeProfileRegion);
-  outStream << PrintMPulseMeasures(MPulse::PopProfileRegion, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeProfileRegion, patch).str();
+  PrintMPulseMeasures(MPulse::PopProfileRegion, patch);
+  PrintMPulseMeasures(MPulse::WholeProfileRegion, patch);
 }
 
 extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
@@ -187,8 +195,8 @@ extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
   mperf.PulseDoMeasure(MPulse::AllocateData);
   mperf.PulseDoMeasure(MPulse::WholeData);
 
-  outStream << PrintMPulseMeasures(MPulse::AllocateData, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeData, patch).str();
+  PrintMPulseMeasures(MPulse::AllocateData, patch);
+  PrintMPulseMeasures(MPulse::WholeData, patch);
 }
 
 extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
@@ -205,8 +213,8 @@ extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
   mperf.PulseDoMeasure(MPulse::DeallocateData);
   mperf.PulseDoMeasure(MPulse::WholeData);
 
-  outStream << PrintMPulseMeasures(MPulse::DeallocateData, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeData, patch).str();
+  PrintMPulseMeasures(MPulse::DeallocateData, patch);
+  PrintMPulseMeasures(MPulse::WholeData, patch);
 }
 
 extern "C" void kokkosp_begin_deep_copy(
@@ -225,14 +233,14 @@ extern "C" void kokkosp_begin_deep_copy(
 
   mperf.PulseDoMeasure(MPulse::BeginDeepCopy);
   mperf.PulseDoMeasure(MPulse::WholeDeepCopy);
-  outStream << PrintMPulseMeasures(MPulse::BeginDeepCopy, patch).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeDeepCopy, patch).str();
+  PrintMPulseMeasures(MPulse::BeginDeepCopy, patch);
+  PrintMPulseMeasures(MPulse::WholeDeepCopy, patch);
 }
 
 extern "C" void kokkosp_end_deep_copy() {
   mperf.PulseDoMeasure(MPulse::EndDeepCopy);
   mperf.PulseDoMeasure(MPulse::WholeDeepCopy);
 
-  outStream << PrintMPulseMeasures(MPulse::EndDeepCopy).str();
-  outStream << PrintMPulseMeasures(MPulse::WholeDeepCopy).str();
+  PrintMPulseMeasures(MPulse::EndDeepCopy);
+  PrintMPulseMeasures(MPulse::WholeDeepCopy);
 }
