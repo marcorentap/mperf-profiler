@@ -19,6 +19,8 @@ enum class HLMeasureType {
   LinuxPerfProc
 };
 
+ // TODO: Handling of pulses should be in Kokkos Tools, not MPerf.
+ // MPerf abstracts away counter/measures subsystems
 enum class MeasurePulse {
   InitLibrary,
   FinalizeLibrary,

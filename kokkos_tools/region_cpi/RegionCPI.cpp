@@ -24,8 +24,7 @@ json rootJson;
 
 // TODO: Use name stack for parfence, parfor, parscan, etc.
 
-void PrintMPulseMeasures(MPulse mPulse, json patch = nullptr,
-                         bool flush = true) {
+void PrintMPulseMeasures(MPulse mPulse, json patch) {
   std::stringstream ss;
   auto mPulseMeasures = mperf.PulseMeasures(mPulse);
   for (auto &measure : mPulseMeasures) {
@@ -43,14 +42,18 @@ extern "C" void kokkosp_init_library(const int loadSeq,
                                      void *deviceInfo) {
   json patch;
   LinuxTracer linuxTracer;
+
+  outputFile.open(outputFileName, std::ofstream::trunc);
   mperf.AddMeasure(linuxTracer, HLType::LinuxPerfProc,
                    MPulse::WholeProfileRegion);
-  // TODO: Add deviceInfo
+  mperf.AddMeasure(linuxTracer, HLType::LinuxPerfProc,
+                   MPulse::WholeParFor);
+
+  patch["hook"] = __FUNCTION__;
   patch["loadSeq"] = loadSeq;
   patch["interfaceVer"] = interfaceVer;
   patch["devInfoCount"] = devInfoCount;
 
-  outputFile.open(outputFileName, std::ofstream::trunc);
 
   mperf.PulseDoMeasure(MPulse::InitLibrary);
   mperf.PulseDoMeasure(MPulse::WholeLibrary);
@@ -59,8 +62,11 @@ extern "C" void kokkosp_init_library(const int loadSeq,
 }
 
 extern "C" void kokkosp_finalize_library() {
+  json patch;
+  patch["hook"] = __FUNCTION__;
+
   mperf.PulseDoMeasure(MPulse::FinalizeLibrary);
-  PrintMPulseMeasures(MPulse::FinalizeLibrary);
+  PrintMPulseMeasures(MPulse::FinalizeLibrary, patch);
 
   outputFile << rootJson << std::endl;
 }
@@ -69,6 +75,7 @@ extern "C" void kokkosp_begin_parallel_for(const char *name,
                                            const uint32_t devID,
                                            uint64_t *kID) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   patch["name"] = name;
   patch["devID"] = devID;
   patch["kID"] = *kID;
@@ -81,6 +88,7 @@ extern "C" void kokkosp_begin_parallel_for(const char *name,
 
 extern "C" void kokkosp_end_parallel_for(const uint64_t kID) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   patch["kID"] = kID;
 
   mperf.PulseDoMeasure(MPulse::EndParFor);
@@ -91,6 +99,7 @@ extern "C" void kokkosp_begin_parallel_scan(const char *name,
                                             const uint32_t devID,
                                             uint64_t *kID) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   patch["name"] = name;
   patch["devID"] = devID;
   patch["kID"] = *kID;
@@ -103,6 +112,7 @@ extern "C" void kokkosp_begin_parallel_scan(const char *name,
 
 extern "C" void kokkospk_end_parallel_scan(const uint64_t kID) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   patch["kID"] = kID;
 
   mperf.PulseDoMeasure(MPulse::EndParScan);
@@ -115,6 +125,7 @@ extern "C" void kokkosp_begin_parallel_reduce(const char *name,
                                               const uint32_t devID,
                                               uint64_t *kID) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   patch["name"] = name;
   patch["devID"] = devID;
   patch["kID"] = *kID;
@@ -128,6 +139,7 @@ extern "C" void kokkosp_begin_parallel_reduce(const char *name,
 
 extern "C" void kokkosp_end_parallel_reduce(const uint64_t kID) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   patch["kID"] = kID;
 
   mperf.PulseDoMeasure(MPulse::EndParReduce);
@@ -139,6 +151,7 @@ extern "C" void kokkosp_end_parallel_reduce(const uint64_t kID) {
 extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
                                     uint64_t *kID) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   patch["name"] = name;
   patch["devID"] = devID;
   patch["kID"] = *kID;
@@ -151,6 +164,7 @@ extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
 
 extern "C" void kokkosp_end_fence(const uint64_t kID) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   patch["kID"] = kID;
 
   mperf.PulseDoMeasure(MPulse::EndParFence);
@@ -164,6 +178,7 @@ extern "C" void kokkosp_push_profile_region(char *regionName) {
   json patch;
   auto regionNameStr = std::string(regionName);
   regionNameStack.push(regionName);
+  patch["hook"] = __FUNCTION__;
   patch["regionName"] = regionName;
 
   mperf.PulseDoMeasure(MPulse::PushProfileRegion);
@@ -176,6 +191,7 @@ extern "C" void kokkosp_pop_profile_region() {
   json patch;
   auto regionNameStr = regionNameStack.top();
   regionNameStack.pop();
+  patch["hook"] = __FUNCTION__;
   patch["regionName"] = regionNameStr;
 
   mperf.PulseDoMeasure(MPulse::PopProfileRegion);
@@ -188,6 +204,7 @@ extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
                                       const char *name, void *ptr,
                                       uint64_t size) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   // TODO: Make this work
   // patch["handle"] = handle;
   patch["name"] = name;
@@ -206,6 +223,7 @@ extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
                                         const char *name, void *ptr,
                                         uint64_t size) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   // TODO: Make this work
   // patch["handle"] = handle;
   patch["name"] = name;
@@ -225,6 +243,7 @@ extern "C" void kokkosp_begin_deep_copy(
     const void *dst_ptr, Kokkos::Profiling::SpaceHandle src_handle,
     const char *src_name, const void *src_ptr, uint64_t size) {
   json patch;
+  patch["hook"] = __FUNCTION__;
   // TODO: Make this work
   // patch["dst_handle"] = dst_handle;
   patch["dst_name"] = dst_name;
@@ -241,9 +260,11 @@ extern "C" void kokkosp_begin_deep_copy(
 }
 
 extern "C" void kokkosp_end_deep_copy() {
+  json patch;
+  patch["hook"] = __FUNCTION__;
   mperf.PulseDoMeasure(MPulse::EndDeepCopy);
   mperf.PulseDoMeasure(MPulse::WholeDeepCopy);
 
-  PrintMPulseMeasures(MPulse::EndDeepCopy);
-  PrintMPulseMeasures(MPulse::WholeDeepCopy);
+  PrintMPulseMeasures(MPulse::EndDeepCopy, patch);
+  PrintMPulseMeasures(MPulse::WholeDeepCopy, patch);
 }
