@@ -1,8 +1,4 @@
-find_package(Kokkos REQUIRED)
-
-add_library(MPerfKP_RegionCPI SHARED RegionCPI.cpp)
-target_include_directories(MPerfKP_RegionCPI PRIVATE ../../include)
-target_link_libraries(MPerfKP_RegionCPI PRIVATE MPerfCore)
-target_link_libraries(MPerfKP_RegionCPI PRIVATE Kokkos::kokkos)
-
-install(TARGETS MPerfKP_RegionCPI)
+add_library(mkp_region_cpi SHARED RegionCPI.cpp)
+target_link_libraries(mkp_region_cpi PUBLIC Kokkos::kokkos)
+target_link_libraries(mkp_region_cpi PUBLIC MPerf LinuxPerfTracer)
+install(TARGETS mkp_region_cpi)

@@ -1,16 +1,17 @@
-#include <Json.hpp>
-#include <LibKPMPerf.hpp>
-#include <MPerf.hpp>
-#include <Measure.hpp>
+#include <fstream>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
-#include <fstream>
+#include <iostream>
+#include <stack>
 
-using Measure = MPerf::Measure;
-using MType = MPerf::MeasureType;
-using MPulse = MPerf::MeasurePulse;
+#include "MPerf/Core.hpp"
+#include "MPerf/Lib/Json.hpp"
+#include "MPerf/Tracers/LinuxPerf.hpp"
+
 using HLType = MPerf::HLMeasureType;
+using MPulse = MPerf::MeasurePulse;
 using json = nlohmann::json;
+using LinuxTracer = MPerf::Tracers::LinuxPerf::Tracer;
 
 constexpr auto outputFileName = "mperf.json";
 
@@ -21,11 +22,10 @@ MPerf::MPerf mperf;
 std::ofstream outputFile;
 json rootJson;
 
-
 // TODO: Use name stack for parfence, parfor, parscan, etc.
 
 void PrintMPulseMeasures(MPulse mPulse, json patch = nullptr,
-                                      bool flush = true) {
+                         bool flush = true) {
   std::stringstream ss;
   auto mPulseMeasures = mperf.PulseMeasures(mPulse);
   for (auto &measure : mPulseMeasures) {
@@ -42,6 +42,9 @@ extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint32_t devInfoCount,
                                      void *deviceInfo) {
   json patch;
+  LinuxTracer linuxTracer;
+  mperf.AddMeasure(linuxTracer, HLType::LinuxPerfProc,
+                   MPulse::WholeProfileRegion);
   // TODO: Add deviceInfo
   patch["loadSeq"] = loadSeq;
   patch["interfaceVer"] = interfaceVer;
@@ -189,7 +192,7 @@ extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
   // patch["handle"] = handle;
   patch["name"] = name;
   // TODO: Use hex representation
-  patch["ptr"] = (uint64_t) ptr;
+  patch["ptr"] = (uint64_t)ptr;
   patch["size"] = size;
 
   mperf.PulseDoMeasure(MPulse::AllocateData);
@@ -207,7 +210,7 @@ extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
   // patch["handle"] = handle;
   patch["name"] = name;
   // TODO: Use hex representation
-  patch["ptr"] = (uint64_t) ptr;
+  patch["ptr"] = (uint64_t)ptr;
   patch["size"] = size;
 
   mperf.PulseDoMeasure(MPulse::DeallocateData);
@@ -225,11 +228,11 @@ extern "C" void kokkosp_begin_deep_copy(
   // TODO: Make this work
   // patch["dst_handle"] = dst_handle;
   patch["dst_name"] = dst_name;
-  patch["dst_ptr"] = (uint64_t) dst_ptr;
+  patch["dst_ptr"] = (uint64_t)dst_ptr;
   // patch["src_handle"] = src_handle;
   patch["src_name"] = src_name;
-  patch["src_ptr"] = (uint64_t) src_ptr;
-  patch["size"] = (uint64_t) size;
+  patch["src_ptr"] = (uint64_t)src_ptr;
+  patch["size"] = (uint64_t)size;
 
   mperf.PulseDoMeasure(MPulse::BeginDeepCopy);
   mperf.PulseDoMeasure(MPulse::WholeDeepCopy);
