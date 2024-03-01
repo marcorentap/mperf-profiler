@@ -1,9 +1,9 @@
-#ifndef PROCMEASURE_HPP
-#define PROCMEASURE_HPP
+#ifndef LINUXPERF_PROCMEASURE_HPP
+#define LINUXPERF_PROCMEASURE_HPP
 
-#include <MPerf.hpp>
+#include <MPerf/Core.hpp>
 
-#include "Tracer.hpp"
+#include "MPerf/Tracers/LinuxPerf.hpp"
 
 namespace MPerf {
 namespace Tracers {
@@ -20,9 +20,7 @@ class ProcMeasure : public Measure {
   int leader_fd;
 
  public:
-  ProcMeasure(HLMeasureType hlType, MeasurePulse pulse)
-      : Measure(hlType, pulse) {}
-  void Init();
+  ProcMeasure(HLMeasureType hlType, MeasurePulse pulse);
   void DoMeasure();
   json GetJSON();
 };

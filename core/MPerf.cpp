@@ -1,18 +1,17 @@
-#include "MPerf.hpp"
-
 #include <memory>
+
+#include "MPerf/Core.hpp"
 
 namespace MPerf {
 MPerf::MPerf() {}
 
-void MPerf::AddMeasure(BaseTracer& tracer, HLMeasureType hlType,
-                       MPulse mPulse) {
-  for (auto& measure : __measures) {
-    auto sptr = std::shared_ptr<BaseMeasure>();
-    auto ptr = tracer.MakeMeasure(hlType, mPulse);
-    sptr = std::move(ptr);
-    measuresByPulse[mPulse].push_back(sptr);
-  }
+std::shared_ptr<BaseMeasure> MPerf::AddMeasure(BaseTracer& tracer, HLMeasureType hlType,
+                       MeasurePulse mPulse) {
+  auto sptr = std::shared_ptr<BaseMeasure>();
+  auto ptr = tracer.MakeMeasure(hlType, mPulse);
+  sptr = std::move(ptr);
+  measuresByPulse[mPulse].push_back(sptr);
+  return sptr;
 }
 
 std::vector<std::shared_ptr<BaseMeasure>>& MPerf::PulseMeasures(
@@ -20,7 +19,7 @@ std::vector<std::shared_ptr<BaseMeasure>>& MPerf::PulseMeasures(
   return measuresByPulse[mPulse];
 }
 
-void MPerf::PulseDoMeasure(MPulse mPulse) {
+void MPerf::PulseDoMeasure(MeasurePulse mPulse) {
   for (auto& measure : PulseMeasures(mPulse)) {
     measure->DoMeasure();
   }

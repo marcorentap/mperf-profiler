@@ -1,11 +1,11 @@
-#include "Tracer.hpp"
+#include <MPerf/Tracers/LinuxPerf.hpp>
 #include "ProcMeasure.hpp"
 
 namespace MPerf {
 namespace Tracers {
 namespace LinuxPerf {
 
-std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType,
+std::unique_ptr<BaseMeasure> Tracer::MakeMeasure(HLMeasureType hlType,
                                          MeasurePulse mPulse) {
   using HLType = HLMeasureType;
   std::unique_ptr<BaseMeasure> ptr;

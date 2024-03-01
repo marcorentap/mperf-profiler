@@ -1,11 +1,12 @@
-#ifndef TRACER_HPP
-#define TRACER_HPP
+#ifndef LINUXPERF_TRACER_HPP
+#define LINUXPERF_TRACER_HPP
 
 #include <asm/unistd.h>
 #include <linux/perf_event.h>
 #include <unistd.h>
+#include <iostream>
 
-#include <MPerf.hpp>
+#include "MPerf/Core.hpp"
 
 namespace MPerf {
 namespace Tracers {
@@ -20,6 +21,7 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
 
 class Tracer : public BaseTracer {
  public:
+  Tracer() { std::cout << "Make LinuxTracer" << std::endl; }
   std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType,
                                            MeasurePulse mPulse);
 };

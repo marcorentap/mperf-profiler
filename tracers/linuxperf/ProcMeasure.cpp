@@ -1,13 +1,15 @@
-#include "Tracer.hpp"
 #include "ProcMeasure.hpp"
 
 #include <err.h>
+
+#include "MPerf/Tracers/LinuxPerf.hpp"
 
 namespace MPerf {
 namespace Tracers {
 namespace LinuxPerf {
 
-void ProcMeasure::Init() {
+ProcMeasure::ProcMeasure(HLMeasureType hlType, MeasurePulse pulse)
+    : Measure(hlType, pulse) {
   int inst_fd, cycle_fd;
   perf_event_attr inst_attr, cycle_attr;
   auto className = typeid(*this).name();
@@ -53,6 +55,7 @@ json ProcMeasure::GetJSON() {
 
   return j;
 }
+
 }  // namespace LinuxPerf
 }  // namespace Tracers
 }  // namespace MPerf

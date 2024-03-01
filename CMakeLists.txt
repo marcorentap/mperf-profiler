@@ -5,6 +5,8 @@ find_package(Kokkos REQUIRED)
 
 add_subdirectory(core)
 add_subdirectory(tracers/linuxperf)
+add_subdirectory(kokkos_tools)
+
 # add_library(mperf SHARED ...)
 # target_link_libraries(mperf SHARED core)
 

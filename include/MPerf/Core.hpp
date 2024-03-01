@@ -1,16 +1,14 @@
-#ifndef MPERF_HPP
-#define MPERF_HPP
-#include <linux/perf_event.h>
+#ifndef MPERF_CORE_HPP
+#define MPERF_CORE_HPP
 
-#include <cstdint>
 #include <memory>
-#include <tuple>
 #include <unordered_map>
 #include <vector>
 
-#include "Json.hpp"
+#include "MPerf/Lib/Json.hpp"
 
 namespace MPerf {
+
 using json = nlohmann::json;
 
 enum class HLMeasureType {
@@ -50,7 +48,6 @@ enum class MeasurePulse {
 
 namespace Tracers {
 namespace Base {
-
 class Measure {
  public:
   HLMeasureType hlType;
@@ -65,36 +62,36 @@ class Measure {
     return j;
   }
 };
-
 class Tracer {
  public:
   virtual std::unique_ptr<Measure> MakeMeasure(HLMeasureType hlType,
-                                               MeasurePulse mPulse) {
-    std::unique_ptr<Measure> ptr;
-    ptr.reset(new Measure(hlType, mPulse));
-    return ptr;
-  }
+                                       MeasurePulse mPulse) {
+     std::unique_ptr<Measure> ptr;
+     ptr.reset(new Measure(hlType, mPulse));
+     return ptr;
+    }
 };
 }  // namespace Base
 }  // namespace Tracers
-using BaseTracer = Tracers::Base::Tracer;
+
 using BaseMeasure = Tracers::Base::Measure;
+using BaseTracer = Tracers::Base::Tracer;
 
 class MPerf {
  private:
-  using HLType = HLMeasureType;
-  using MPulse = MeasurePulse;
-  std::vector<std::tuple<BaseTracer, HLMeasureType, MPulse>> __measures;
-  std::unordered_map<MPulse, std::vector<std::shared_ptr<BaseMeasure>>>
+  std::vector<std::shared_ptr<BaseMeasure>> measures;
+  std::unordered_map<MeasurePulse, std::vector<std::shared_ptr<BaseMeasure>>>
       measuresByPulse;
 
  public:
   MPerf();
-  void AddMeasure(BaseTracer&, HLMeasureType, MPulse);
-  std::vector<std::shared_ptr<BaseMeasure>>& PulseMeasures(MPulse mPulse);
-  void PulseDoMeasure(MPulse mPulse);
-  void PulseDoNextMeasure(MPulse mPulse);
+  std::shared_ptr<BaseMeasure> AddMeasure(BaseTracer& tracer, HLMeasureType hlType,
+                  MeasurePulse mPulse);
+  std::vector<std::shared_ptr<BaseMeasure>>& PulseMeasures(MeasurePulse mPulse);
+  void PulseDoMeasure(MeasurePulse mPulse);
+  void PulseDoNextMeasure(MeasurePulse mPulse);
   std::shared_ptr<BaseMeasure> GetMeasure(HLMeasureType HLType);
 };
+
 }  // namespace MPerf
 #endif
