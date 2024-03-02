@@ -23,7 +23,7 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
 class Tracer : public BaseTracer {
  public:
   Tracer() { std::cout << "Make LinuxTracer" << std::endl; }
-  std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType);
+  std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType) override;
 };
 
 class Measure : public BaseMeasure {
@@ -51,11 +51,7 @@ class Measure : public BaseMeasure {
     }
   }
 
-  virtual void Init() {}
   virtual void DoMeasure() {}
-  virtual void DoNextMeasure() {}
-  virtual void WriteResult(void *dest, size_t len) {}
-  virtual void WriteResult(std::shared_ptr<void> dest, size_t len) {}
   virtual json GetJSON() {
     json j;
     j["name"] = "Linux Perf Measure";

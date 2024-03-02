@@ -12,6 +12,8 @@ std::unique_ptr<BaseMeasure> Tracer::MakeMeasure(HLMeasureType hlType) {
 
   if (hlType == HLMeasureType::LinuxPerfProc) {
     ptr.reset(new ProcMeasure(hlType));
+          std::cout << "LinuxTracer make PerfMeasure" << std::endl;
+
   } else {
     ptr.reset(new Measure(hlType));
   }

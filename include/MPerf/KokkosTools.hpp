@@ -45,42 +45,42 @@ static auto measuresByPulse =
 
 inline BaseMeasure &KokkosPAddMeasure(HLType hlType, BaseTracer &tracer,
                                       KPulse pulse) {
-  auto measure = tracer.MakeMeasure(hlType);
-  auto sptr = std::make_shared<BaseMeasure>(*measure);
+  auto sptr = std::shared_ptr<BaseMeasure>();
+  sptr = tracer.MakeMeasure(hlType);
 
   measures.push_back(sptr);
   measuresByPulse[pulse].push_back(sptr);
 
   // TODO: Refactor this Great Wall of China
-  if (pulse == KPulse::All || pulse == KPulse::WholeLibrary ) {
+  if (pulse == KPulse::All || pulse == KPulse::WholeLibrary) {
     measuresByPulse[KPulse::InitLibrary].push_back(sptr);
     measuresByPulse[KPulse::FinalizeLibrary].push_back(sptr);
   }
-  if (pulse == KPulse::All || pulse == KPulse::WholeParFor ) {
+  if (pulse == KPulse::All || pulse == KPulse::WholeParFor) {
     measuresByPulse[KPulse::BeginParFor].push_back(sptr);
     measuresByPulse[KPulse::EndParFor].push_back(sptr);
   }
-  if (pulse == KPulse::All || pulse == KPulse::WholeParScan ) {
+  if (pulse == KPulse::All || pulse == KPulse::WholeParScan) {
     measuresByPulse[KPulse::BeginParScan].push_back(sptr);
     measuresByPulse[KPulse::EndParScan].push_back(sptr);
   }
-  if (pulse == KPulse::All || pulse == KPulse::WholeParReduce ) {
+  if (pulse == KPulse::All || pulse == KPulse::WholeParReduce) {
     measuresByPulse[KPulse::BeginParReduce].push_back(sptr);
     measuresByPulse[KPulse::EndParReduce].push_back(sptr);
   }
-  if (pulse == KPulse::All || pulse == KPulse::WholeFence ) {
+  if (pulse == KPulse::All || pulse == KPulse::WholeFence) {
     measuresByPulse[KPulse::BeginFence].push_back(sptr);
     measuresByPulse[KPulse::EndFence].push_back(sptr);
   }
-  if (pulse == KPulse::All || pulse == KPulse::WholeProfileRegion ) {
+  if (pulse == KPulse::All || pulse == KPulse::WholeProfileRegion) {
     measuresByPulse[KPulse::PushProfileRegion].push_back(sptr);
     measuresByPulse[KPulse::PopProfileRegion].push_back(sptr);
   }
-  if (pulse == KPulse::All | pulse == KPulse::WholeData ) {
+  if (pulse == KPulse::All | pulse == KPulse::WholeData) {
     measuresByPulse[KPulse::AllocateData].push_back(sptr);
     measuresByPulse[KPulse::DeallocateData].push_back(sptr);
   }
-  if (pulse == KPulse::All || pulse == KPulse::WholeDeepCopy ) {
+  if (pulse == KPulse::All || pulse == KPulse::WholeDeepCopy) {
     measuresByPulse[KPulse::BeginDeepCopy].push_back(sptr);
     measuresByPulse[KPulse::EndDeepCopy].push_back(sptr);
   }

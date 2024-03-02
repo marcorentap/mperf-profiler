@@ -27,13 +27,9 @@ foreach(TOOL IN LISTS KOKKOS_TOOLS)
   target_include_directories(${TOOL} PRIVATE include)
   target_link_libraries(${TOOL} MPerfCore ${TRACERS})
 endforeach()
+
+set_target_properties(${KOKKOS_TOOLS} PROPERTIES
+LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
 install(TARGETS ${KOKKOS_TOOLS})
-
-
-# add_subdirectory(kokkos_tools/perf_proc)
-# target_include_directories(KokkosTools PRIVATE include)
-
-# include(GNUInstallDirs)
-# install(DIRECTORY include/MPerf
-#         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-# )

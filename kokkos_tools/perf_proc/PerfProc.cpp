@@ -22,8 +22,6 @@ std::stack<std::string> regionNameStack;
 std::ofstream outputFile;
 json rootJson;
 
-// TODO: Use name stack for parfence, parfor, parscan, etc.
-
 void AddPulseMeasuresToJson(KPulse mPulse, json patch) {
   std::stringstream ss;
   auto mPulseMeasures = MPerf::KokkosTools::measuresByPulse[mPulse];

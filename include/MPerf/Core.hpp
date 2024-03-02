@@ -27,7 +27,6 @@ class Measure {
   HLMeasureType hlType;
   Measure(HLMeasureType hlType)
       : hlType(hlType) {}
-  virtual void Init() {}
   virtual void DoMeasure() {}
   virtual json GetJSON() {
     json j;
