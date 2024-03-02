@@ -20,7 +20,7 @@ class ProcMeasure : public Measure {
   int leader_fd;
 
  public:
-  ProcMeasure(HLMeasureType hlType, MeasurePulse pulse);
+  ProcMeasure(HLMeasureType hlType);
   void DoMeasure();
   json GetJSON();
 };

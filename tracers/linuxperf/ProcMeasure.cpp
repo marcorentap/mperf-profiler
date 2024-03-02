@@ -8,8 +8,8 @@ namespace MPerf {
 namespace Tracers {
 namespace LinuxPerf {
 
-ProcMeasure::ProcMeasure(HLMeasureType hlType, MeasurePulse pulse)
-    : Measure(hlType, pulse) {
+ProcMeasure::ProcMeasure(HLMeasureType hlType)
+    : Measure(hlType) {
   int inst_fd, cycle_fd;
   perf_event_attr inst_attr, cycle_attr;
   auto className = typeid(*this).name();

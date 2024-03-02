@@ -1,1 +1,1 @@
-add_library(MPerf OBJECT MPerf.cpp)
+add_library(MPerfCore OBJECT MPerf.cpp)

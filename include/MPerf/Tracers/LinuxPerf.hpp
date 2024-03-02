@@ -4,6 +4,7 @@
 #include <asm/unistd.h>
 #include <linux/perf_event.h>
 #include <unistd.h>
+
 #include <iostream>
 
 #include "MPerf/Core.hpp"
@@ -22,8 +23,7 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
 class Tracer : public BaseTracer {
  public:
   Tracer() { std::cout << "Make LinuxTracer" << std::endl; }
-  std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType,
-                                           MeasurePulse mPulse);
+  std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType);
 };
 
 class Measure : public BaseMeasure {
@@ -43,8 +43,7 @@ class Measure : public BaseMeasure {
   std::vector<int> fds;
 
  public:
-  Measure(HLMeasureType hlType, MeasurePulse pulse)
-      : BaseMeasure(hlType, pulse) {}
+  Measure(HLMeasureType hlType) : BaseMeasure(hlType) {}
 
   ~Measure() {
     for (auto &fd : fds) {
