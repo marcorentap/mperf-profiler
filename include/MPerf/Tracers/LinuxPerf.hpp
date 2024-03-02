@@ -22,7 +22,7 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
 
 class Tracer : public BaseTracer {
  public:
-  Tracer() { std::cout << "Make LinuxTracer" << std::endl; }
+  Tracer() { }
   std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType) override;
 };
 
