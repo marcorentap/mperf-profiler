@@ -1,4 +1,4 @@
-#include "ProcMeasure.hpp"
+#include "AllCPUEvents.hpp"
 
 #include <err.h>
 #include <linux/perf_event.h>

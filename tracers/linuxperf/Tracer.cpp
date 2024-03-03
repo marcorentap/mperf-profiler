@@ -1,6 +1,6 @@
 #include <MPerf/Tracers/LinuxPerf.hpp>
 
-#include "ProcMeasure.hpp"
+#include "AllCPUEvents.hpp"
 
 namespace MPerf {
 namespace Tracers {

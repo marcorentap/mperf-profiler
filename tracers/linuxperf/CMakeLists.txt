@@ -1,1 +1,1 @@
-add_library(LinuxPerfTracer OBJECT Tracer.cpp ProcMeasure.cpp)
+add_library(LinuxPerfTracer OBJECT Tracer.cpp AllCPUEvents.cpp)
