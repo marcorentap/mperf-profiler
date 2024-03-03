@@ -42,8 +42,8 @@ class Tracer {
 }  // namespace Base
 }  // namespace Tracers
 
-using BaseMeasure = Tracers::Base::Measure;
-using BaseTracer = Tracers::Base::Tracer;
+using Measure = Tracers::Base::Measure;
+using Tracer = Tracers::Base::Tracer;
 
 }  // namespace MPerf
 #endif

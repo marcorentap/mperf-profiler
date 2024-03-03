@@ -7,9 +7,9 @@ namespace MPerf {
 namespace Tracers {
 namespace LinuxPerf {
 
-std::unique_ptr<BaseMeasure> Tracer::MakeMeasure(HLMeasureType hlType) {
+std::unique_ptr<::MPerf::Measure> Tracer::MakeMeasure(HLMeasureType hlType) {
   using HLType = HLMeasureType;
-  std::unique_ptr<BaseMeasure> ptr;
+  std::unique_ptr<::MPerf::Measure> ptr;
 
   if (hlType == HLMeasureType::ProcCounters) {
     ptr.reset(new AllCPUEvents(hlType));

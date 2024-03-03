@@ -45,7 +45,7 @@ extern "C" void kokkosp_init_library(const int loadSeq,
 
   AddMeasure(HLType::ProcCounters, linuxTracer, KPulse::All);
 
-  MKP::DoInitLibrary();
+  MKP::PulseInitLibrary();
 
   patch["hook"] = __FUNCTION__;
   patch["loadSeq"] = loadSeq;
@@ -57,7 +57,7 @@ extern "C" void kokkosp_init_library(const int loadSeq,
 extern "C" void kokkosp_finalize_library() {
   json patch;
 
-  MKP::DoFinalizeLibrary();
+  MKP::PulseFinalizeLibrary();
 
   patch["hook"] = __FUNCTION__;
   AddPulseMeasuresToJson(KPulse::FinalizeLibrary, patch);
@@ -69,7 +69,7 @@ extern "C" void kokkosp_begin_parallel_for(const char *name,
                                            uint64_t *kID) {
   json patch;
 
-  MKP::DoBeginParallelFor();
+  MKP::PulseBeginParallelFor();
 
   patch["hook"] = __FUNCTION__;
   patch["name"] = name;
@@ -81,7 +81,7 @@ extern "C" void kokkosp_begin_parallel_for(const char *name,
 extern "C" void kokkosp_end_parallel_for(const uint64_t kID) {
   json patch;
 
-  MKP::DoEndParallelFor();
+  MKP::PulseEndParallelFor();
 
   patch["hook"] = __FUNCTION__;
   patch["kID"] = kID;
@@ -93,7 +93,7 @@ extern "C" void kokkosp_begin_parallel_scan(const char *name,
                                             uint64_t *kID) {
   json patch;
 
-  MKP::DoBeginParallelScan();
+  MKP::PulseBeginParallelScan();
 
   patch["hook"] = __FUNCTION__;
   patch["name"] = name;
@@ -105,7 +105,7 @@ extern "C" void kokkosp_begin_parallel_scan(const char *name,
 extern "C" void kokkosp_end_parallel_scan(const uint64_t kID) {
   json patch;
 
-  MKP::DoEndParallelScan();
+  MKP::PulseEndParallelScan();
 
   patch["hook"] = __FUNCTION__;
   patch["kID"] = kID;
@@ -117,7 +117,7 @@ extern "C" void kokkosp_begin_parallel_reduce(const char *name,
                                               uint64_t *kID) {
   json patch;
 
-  MKP::DoBeginParallelReduce();
+  MKP::PulseBeginParallelReduce();
 
   patch["hook"] = __FUNCTION__;
   patch["name"] = name;
@@ -129,7 +129,7 @@ extern "C" void kokkosp_begin_parallel_reduce(const char *name,
 extern "C" void kokkosp_end_parallel_reduce(const uint64_t kID) {
   json patch;
 
-  MKP::DoEndParallelReduce();
+  MKP::PulseEndParallelReduce();
 
   patch["hook"] = __FUNCTION__;
   patch["kID"] = kID;
@@ -140,7 +140,7 @@ extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
                                     uint64_t *kID) {
   json patch;
 
-  MKP::DoBeginFence();
+  MKP::PulseBeginFence();
 
   patch["hook"] = __FUNCTION__;
   patch["name"] = name;
@@ -152,7 +152,7 @@ extern "C" void kokkosp_begin_fence(const char *name, const uint32_t devID,
 extern "C" void kokkosp_end_fence(const uint64_t kID) {
   json patch;
 
-  MKP::DoEndFence();
+  MKP::PulseEndFence();
 
   patch["hook"] = __FUNCTION__;
   patch["kID"] = kID;
@@ -162,7 +162,7 @@ extern "C" void kokkosp_end_fence(const uint64_t kID) {
 extern "C" void kokkosp_push_profile_region(char *regionName) {
   json patch;
 
-  MKP::DoPushProfileRegion();
+  MKP::PulsePushProfileRegion();
 
   regionNameStack.push(regionName);
   patch["hook"] = __FUNCTION__;
@@ -175,7 +175,7 @@ extern "C" void kokkosp_pop_profile_region() {
   json patch;
   auto regionNameStr = regionNameStack.top();
 
-  MKP::DoPopProfileRegion();
+  MKP::PulsePopProfileRegion();
 
   patch["hook"] = __FUNCTION__;
   patch["regionName"] = regionNameStack.top();
@@ -189,7 +189,7 @@ extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
   json patch;
   std::stringstream handleStream;
 
-  MKP::DoAllocateData();
+  MKP::PulseAllocateData();
 
   handleStream << "0x" << std::hex << ptr;
   patch["hook"] = __FUNCTION__;
@@ -207,7 +207,7 @@ extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
   json patch;
   std::stringstream handleStream;
 
-  MKP::DoDeallocateData();
+  MKP::PulseDeallocateData();
 
   handleStream << "0x" << std::hex << ptr;
   patch["hook"] = __FUNCTION__;
@@ -227,7 +227,7 @@ extern "C" void kokkosp_begin_deep_copy(
   std::stringstream srcHandleStream;
   std::stringstream dstHandleStream;
 
-  MKP::DoBeginDeepCopy();
+  MKP::PulseBeginDeepCopy();
 
   dstHandleStream << "0x" << std::hex << dst_ptr;
   srcHandleStream << "0x" << std::hex << src_ptr;
@@ -246,7 +246,7 @@ extern "C" void kokkosp_begin_deep_copy(
 
 extern "C" void kokkosp_end_deep_copy() {
   json patch;
-  MKP::DoEndDeepCopy();
+  MKP::PulseEndDeepCopy();
 
   patch["hook"] = __FUNCTION__;
   AddPulseMeasuresToJson(KPulse::EndDeepCopy, patch);

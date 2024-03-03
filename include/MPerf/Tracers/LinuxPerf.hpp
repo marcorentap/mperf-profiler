@@ -20,13 +20,13 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
   return syscall(__NR_perf_event_open, hw_event, pid, cpu, group_fd, flags);
 }
 
-class Tracer : public BaseTracer {
+class Tracer : public ::MPerf::Tracer {
  public:
   Tracer() {}
-  std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType) override;
+  std::unique_ptr<Measure> MakeMeasure(HLMeasureType hlType) override;
 };
 
-class Measure : public BaseMeasure {
+class Measure : public ::MPerf::Measure{
  protected:
   struct PerfEventAttr {
     uint64_t type;
@@ -41,7 +41,7 @@ class Measure : public BaseMeasure {
   std::vector<int> fds;
 
  public:
-  Measure(HLMeasureType hlType) : BaseMeasure(hlType) {}
+  Measure(HLMeasureType hlType) : ::MPerf::Measure(hlType) {}
 
   ~Measure() {
     for (auto &fd : fds) {
