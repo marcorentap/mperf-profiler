@@ -11,11 +11,16 @@ target_include_directories(MPerfCore PRIVATE include)
 set(KOKKOS_TOOLS)
 set(TRACERS)
 
+# MPerf Tracers
 add_subdirectory(tracers/linuxperf)
 list(APPEND TRACERS LinuxPerfTracer)
 
+# MPerf Kokkos Tools
 add_subdirectory(kokkos_tools/perf_proc)
 list(APPEND KOKKOS_TOOLS mkt_perf_proc)
+
+add_subdirectory(kokkos_tools/region_cpi)
+list(APPEND KOKKOS_TOOLS mkt_region_cpi)
 
 
 target_link_libraries(MPerfCore ${TRACERS})
