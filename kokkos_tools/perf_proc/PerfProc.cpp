@@ -190,8 +190,7 @@ extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
   MKP::DoAllocateData();
 
   patch["hook"] = __FUNCTION__;
-  // TODO: Make this work
-  // patch["handle"] = handle;
+  patch["handle"] = handle.name;
   patch["name"] = name;
   // TODO: Use hex representation
   patch["ptr"] = (uint64_t)ptr;
@@ -208,8 +207,7 @@ extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
   MKP::DoDeallocateData();
 
   patch["hook"] = __FUNCTION__;
-  // TODO: Make this work
-  // patch["handle"] = handle;
+  patch["handle"] = handle.name;
   patch["name"] = name;
   // TODO: Use hex representation
   patch["ptr"] = (uint64_t)ptr;
@@ -227,11 +225,10 @@ extern "C" void kokkosp_begin_deep_copy(
   MKP::DoBeginDeepCopy();
 
   patch["hook"] = __FUNCTION__;
-  // TODO: Make this work
-  // patch["dst_handle"] = dst_handle;
+  patch["dst_handle"] = dst_handle.name;
   patch["dst_name"] = dst_name;
   patch["dst_ptr"] = (uint64_t)dst_ptr;
-  // patch["src_handle"] = src_handle;
+  patch["src_handle"] = src_handle.name;
   patch["src_name"] = src_name;
   patch["src_ptr"] = (uint64_t)src_ptr;
   patch["size"] = (uint64_t)size;
