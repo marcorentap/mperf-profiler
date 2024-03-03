@@ -96,31 +96,31 @@ inline void PulseDoMeasure(KPulse pulse) {
   }
 }
 
-inline void KokkosPInitLibrary() { PulseDoMeasure(KPulse::InitLibrary); }
+inline void DoInitLibrary() { PulseDoMeasure(KPulse::InitLibrary); }
 
-inline void KokkosPFinalizeLibrary() {
+inline void DoFinalizeLibrary() {
   PulseDoMeasure(KPulse::FinalizeLibrary);
 }
-inline void KokkosPBeginParallelFor() { PulseDoMeasure(KPulse::BeginParFor); }
-inline void KokkosPEndParallelFor() { PulseDoMeasure(KPulse::EndParFor); }
-inline void KokkosPBeginParallelScan() { PulseDoMeasure(KPulse::BeginParScan); }
-inline void KokkosPEndParallelScan() { PulseDoMeasure(KPulse::EndParScan); }
-inline void KokkosPBeginParallelReduce() {
+inline void DoBeginParallelFor() { PulseDoMeasure(KPulse::BeginParFor); }
+inline void DoEndParallelFor() { PulseDoMeasure(KPulse::EndParFor); }
+inline void DoBeginParallelScan() { PulseDoMeasure(KPulse::BeginParScan); }
+inline void DoEndParallelScan() { PulseDoMeasure(KPulse::EndParScan); }
+inline void DoBeginParallelReduce() {
   PulseDoMeasure(KPulse::BeginParReduce);
 }
-inline void KokkosPEndParallelReduce() { PulseDoMeasure(KPulse::EndParReduce); }
-inline void KokkosPBeginFence() { PulseDoMeasure(KPulse::BeginFence); }
-inline void KokkosPEndFence() { PulseDoMeasure(KPulse::EndFence); }
-inline void KokkosPPushProfileRegion() {
+inline void DoEndParallelReduce() { PulseDoMeasure(KPulse::EndParReduce); }
+inline void DoBeginFence() { PulseDoMeasure(KPulse::BeginFence); }
+inline void DoEndFence() { PulseDoMeasure(KPulse::EndFence); }
+inline void DoPushProfileRegion() {
   PulseDoMeasure(KPulse::PushProfileRegion);
 }
-inline void KokkosPPopProfileRegion() {
+inline void DoPopProfileRegion() {
   PulseDoMeasure(KPulse::PopProfileRegion);
 }
-inline void KokkosPAllocateData() { PulseDoMeasure(KPulse::AllocateData); }
-inline void KokkosPDeallocateData() { PulseDoMeasure(KPulse::DeallocateData); }
-inline void KokkosPBeginDeepCopy() { PulseDoMeasure(KPulse::BeginDeepCopy); }
-inline void KokkosPEndDeepCopy() { PulseDoMeasure(KPulse::EndDeepCopy); }
+inline void DoAllocateData() { PulseDoMeasure(KPulse::AllocateData); }
+inline void DoDeallocateData() { PulseDoMeasure(KPulse::DeallocateData); }
+inline void DoBeginDeepCopy() { PulseDoMeasure(KPulse::BeginDeepCopy); }
+inline void DoEndDeepCopy() { PulseDoMeasure(KPulse::EndDeepCopy); }
 
 }  // namespace KokkosTools
 }  // namespace MPerf
