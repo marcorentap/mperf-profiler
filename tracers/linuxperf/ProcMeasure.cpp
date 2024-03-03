@@ -1,6 +1,7 @@
 #include "ProcMeasure.hpp"
 
 #include <err.h>
+#include <linux/perf_event.h>
 
 #include "MPerf/Tracers/LinuxPerf.hpp"
 
@@ -8,38 +9,37 @@ namespace MPerf {
 namespace Tracers {
 namespace LinuxPerf {
 
-ProcMeasure::ProcMeasure(HLMeasureType hlType)
-    : Measure(hlType) {
-  int inst_fd, cycle_fd;
-  perf_event_attr instAttr, cycleAttr;
-  auto className = typeid(*this).name();
+void AllCPUEvents::PerfEventOpen(uint32_t type, uint64_t config) {
+  int fd;
+  perf_event_attr attr{.type = type, .config = config, .read_format = PERF_FORMAT_GROUP};
 
-  memset(&instAttr, 0, sizeof(instAttr));
-  memset(&cycleAttr, 0, sizeof(cycleAttr));
-
-  instAttr.type = PERF_TYPE_HARDWARE;
-  instAttr.config = PERF_COUNT_HW_INSTRUCTIONS;
-  instAttr.read_format = PERF_FORMAT_GROUP;
-
-  cycleAttr.type = PERF_TYPE_HARDWARE;
-  cycleAttr.config = PERF_COUNT_HW_CPU_CYCLES;
-  cycleAttr.read_format = PERF_FORMAT_GROUP;
-
-  // Use inst_fd as group leader
-  // TODO: Do proper exception by skipping the measure instead of exiting
-  inst_fd = perf_event_open(&instAttr, getpid(), -1, -1, 0);
-  if (inst_fd < 0) {
-    err(EXIT_FAILURE, "%s cannot open fd for instruction count", className);
+  if (fds.size() == 0) {
+    fd = perf_event_open(&attr, getpid(), -1, -1, 0);
+    leader_fd = fd;
+  } else {
+    fd = perf_event_open(&attr, getpid(), -1, leader_fd, 0);
   }
-  leader_fd = inst_fd;
 
-  cycle_fd = perf_event_open(&cycleAttr, getpid(), -1, inst_fd, 0);
-  if (cycle_fd < 0) {
-    err(EXIT_FAILURE, "%s cannot open fd for cycle count", className);
+  if (fd < 0) {
+    err(EXIT_FAILURE, "cannot open fd for type %u config %lu", type, config);
   }
+
+  fds.push_back(fd);
 }
 
-void ProcMeasure::DoMeasure() {
+AllCPUEvents::AllCPUEvents(HLMeasureType hlType) : Measure(hlType) {
+  // TODO: Didn't include all configs here, since they're aren't available
+  //       So need to add checks
+  PerfEventOpen(PERF_TYPE_HARDWARE, PERF_COUNT_HW_CPU_CYCLES);
+  PerfEventOpen(PERF_TYPE_HARDWARE, PERF_COUNT_HW_INSTRUCTIONS);
+  PerfEventOpen(PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_INSTRUCTIONS);
+  PerfEventOpen(PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_MISSES);
+  PerfEventOpen(PERF_TYPE_HARDWARE, PERF_COUNT_HW_BUS_CYCLES);
+  // PerfEventOpen(PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_FRONTEND);
+  // PerfEventOpen(PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_BACKEND);
+}
+
+void AllCPUEvents::DoMeasure() {
   memset(&result, 0, sizeof(result));
   int ret = read(leader_fd, &result, sizeof(result));
   if (ret < 0) {
@@ -47,12 +47,17 @@ void ProcMeasure::DoMeasure() {
   }
 }
 
-json ProcMeasure::GetJSON() {
+json AllCPUEvents::GetJSON() {
   json j;
-  j["name"] = "Linux Perf CPU Measure";
-  j["instCount"] = result.instCount;
-  j["cycleCount"] = result.cycleCount;
-
+  j["measureName"] = "Linux Perf CPU Measure";
+  j["cycles"] = result.cycles;
+  j["insts"] = result.insts;
+  j["branchInsts"] = result.branchInsts;
+  j["branchMisses"] = result.branchMisses;
+  j["busCycles"] = result.busCycles;
+  // These are not available :(
+  // j["stalledCycleFront"] = result.stalledCycleFront;
+  // j["stalledCyclesBack"] = result.stalledCyclesBack;
   return j;
 }
 

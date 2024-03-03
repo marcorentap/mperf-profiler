@@ -13,7 +13,7 @@ namespace MPerf {
 namespace Tracers {
 namespace LinuxPerf {
 
-class ProcMeasure;
+class AllCPUEvents;
 
 static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
                             int cpu, int group_fd, unsigned long flags) {
@@ -22,7 +22,7 @@ static long perf_event_open(struct perf_event_attr *hw_event, pid_t pid,
 
 class Tracer : public BaseTracer {
  public:
-  Tracer() { }
+  Tracer() {}
   std::unique_ptr<BaseMeasure> MakeMeasure(HLMeasureType hlType) override;
 };
 
@@ -38,8 +38,6 @@ class Measure : public BaseMeasure {
     uint64_t time_running; /* if PERF_FORMAT_TOTAL_TIME_RUNNING */
     uint64_t id;           /* if PERF_FORMAT_ID */
   };
-
- private:
   std::vector<int> fds;
 
  public:
@@ -54,7 +52,7 @@ class Measure : public BaseMeasure {
   virtual void DoMeasure() {}
   virtual json GetJSON() {
     json j;
-    j["name"] = "Linux Perf Measure";
+    j["measureName"] = "Default Linux Perf Measure";
     return j;
   }
 };

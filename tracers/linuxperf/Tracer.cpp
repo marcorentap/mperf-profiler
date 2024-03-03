@@ -11,7 +11,7 @@ std::unique_ptr<BaseMeasure> Tracer::MakeMeasure(HLMeasureType hlType) {
   std::unique_ptr<BaseMeasure> ptr;
 
   if (hlType == HLMeasureType::ProcCounters) {
-    ptr.reset(new ProcMeasure(hlType));
+    ptr.reset(new AllCPUEvents(hlType));
 
   } else {
     ptr.reset(new Measure(hlType));

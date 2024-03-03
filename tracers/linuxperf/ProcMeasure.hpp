@@ -9,18 +9,24 @@ namespace MPerf {
 namespace Tracers {
 namespace LinuxPerf {
 
-class ProcMeasure : public Measure {
+class AllCPUEvents : public Measure {
  private:
-  // TODO: Derive read_format depend on Init() instead of manually here
+  void PerfEventOpen(uint32_t type, uint64_t config);
   struct read_format {
     uint64_t nr;
-    uint64_t instCount;
-    uint64_t cycleCount;
+    uint64_t cycles;
+    uint64_t insts;
+    uint64_t branchInsts;
+    uint64_t branchMisses;
+    uint64_t busCycles;
+    // These are not available :(
+    // uint64_t stalledCycleFront;
+    // uint64_t stalledCyclesBack;
   } result;
   int leader_fd;
 
  public:
-  ProcMeasure(HLMeasureType hlType);
+  AllCPUEvents(HLMeasureType hlType);
   void DoMeasure();
   json GetJSON();
 };
