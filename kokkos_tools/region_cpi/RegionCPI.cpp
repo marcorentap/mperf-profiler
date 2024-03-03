@@ -2,83 +2,62 @@
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <stack>
 
 #include "MPerf/Core.hpp"
-#include "MPerf/KokkosTools.hpp"
 #include "MPerf/Tracers/LinuxPerf.hpp"
 
-namespace MKP = MPerf::KokkosTools;
-using HLType = MKP::HLType;
-using KPulse = MKP::KPulse;
-
 using json = nlohmann::json;
-using LinuxTracer = MPerf::Tracers::LinuxPerf::Tracer;
+using Measure = MPerf::Measure;
+using PerfTracer = MPerf::Tracers::LinuxPerf::Tracer;
+constexpr auto outputFileName = "mperf_region_cpi.json";
 
-
-// Region Name, CPI, IPC
 std::stack<std::string> regionNameStack;
 std::ofstream outputFile;
-json rootJson;
-
-void AddPulseMeasuresToJson(KPulse mPulse, json patch) {
-  std::stringstream ss;
-  auto mPulseMeasures = MPerf::KokkosTools::measuresByPulse[mPulse];
-  for (auto &measure : mPulseMeasures) {
-    auto j = measure->GetJSON();
-    if (patch != nullptr) {
-      j.merge_patch(patch);
-    }
-    rootJson.push_back(j);
-  }
-}
-
-constexpr auto outputFileName = "mperf_region_cpi.json";
+json eventJson, cpiJson;
+std::unique_ptr<Measure> cpuEventMeasure;
 
 extern "C" void kokkosp_init_library(const int loadSeq,
                                      const uint64_t interfaceVer,
                                      const uint32_t devInfoCount,
                                      void *deviceInfo) {
-  json patch;
-  LinuxTracer linuxTracer;
+  // Measure processor events with linux's perf 
+  auto perfTracer = PerfTracer();
+  cpuEventMeasure = perfTracer.MakeMeasure(MPerf::HLMeasureType::ProcCounters);
   outputFile.open(outputFileName, std::ofstream::trunc);
-
-  AddMeasure(HLType::ProcCounters, linuxTracer, KPulse::WholeProfileRegion);
-
-  MKP::DoInitLibrary();
-
-  patch["hook"] = __FUNCTION__;
-  patch["loadSeq"] = loadSeq;
-  patch["interfaceVer"] = interfaceVer;
-  patch["devInfoCount"] = devInfoCount;
-  AddPulseMeasuresToJson(KPulse::InitLibrary, patch);
 }
 
 extern "C" void kokkosp_finalize_library() {
-  // Don't measure anything, just write json to file
-  outputFile << rootJson << std::endl;
+  outputFile << eventJson << std::endl;
 }
 
-
 extern "C" void kokkosp_push_profile_region(char *regionName) {
-  json patch;
+  json out, cpuEvents;
 
-  MKP::DoPushProfileRegion();
+  cpuEventMeasure->DoMeasure();
+  cpuEvents = cpuEventMeasure->GetJSON();
 
   regionNameStack.push(regionName);
-  patch["regionName"] = regionName;
-
-  AddPulseMeasuresToJson(KPulse::PushProfileRegion, patch);
+  out["regionName"] = regionName;
+  out["instructions"] = cpuEvents["insts"];
+  out["cycles"] = cpuEvents["cycles"];
+  eventJson.push_back(out);
 }
 
 extern "C" void kokkosp_pop_profile_region() {
-  json patch;
-  auto regionNameStr = regionNameStack.top();
+  json out, cpuEvents;
+  std::string regionName;
 
-  MKP::DoPopProfileRegion();
+  cpuEventMeasure->DoMeasure();
+  cpuEvents = cpuEventMeasure->GetJSON();
+  regionName = regionNameStack.top();
 
-  patch["regionName"] = regionNameStack.top();
-  AddPulseMeasuresToJson(KPulse::PopProfileRegion, patch);
+  out["regionName"] = regionName;
+  out["instructions"] = cpuEvents["insts"];
+  out["cycles"] = cpuEvents["cycles"];
+  eventJson.push_back(out);
+
   regionNameStack.pop();
 }
