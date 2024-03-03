@@ -43,7 +43,7 @@ static auto measures = std::vector<std::shared_ptr<BaseMeasure>>{};
 static auto measuresByPulse =
     std::unordered_map<KPulse, std::vector<std::shared_ptr<BaseMeasure>>>{};
 
-inline BaseMeasure &KokkosPAddMeasure(HLType hlType, BaseTracer &tracer,
+inline BaseMeasure &AddMeasure(HLType hlType, BaseTracer &tracer,
                                       KPulse pulse) {
   auto sptr = std::shared_ptr<BaseMeasure>();
   sptr = tracer.MakeMeasure(hlType);
