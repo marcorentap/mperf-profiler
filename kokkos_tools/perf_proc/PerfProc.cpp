@@ -2,6 +2,7 @@
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
 #include <iostream>
+#include <sstream>
 #include <stack>
 
 #include "MPerf/Core.hpp"
@@ -93,7 +94,7 @@ extern "C" void kokkosp_begin_parallel_scan(const char *name,
   json patch;
 
   MKP::DoBeginParallelScan();
-  
+
   patch["hook"] = __FUNCTION__;
   patch["name"] = name;
   patch["devID"] = devID;
@@ -186,14 +187,15 @@ extern "C" void kokkosp_allocate_data(Kokkos::Profiling::SpaceHandle handle,
                                       const char *name, void *ptr,
                                       uint64_t size) {
   json patch;
+  std::stringstream handleStream;
 
   MKP::DoAllocateData();
 
+  handleStream << "0x" << std::hex << ptr;
   patch["hook"] = __FUNCTION__;
   patch["handle"] = handle.name;
   patch["name"] = name;
-  // TODO: Use hex representation
-  patch["ptr"] = (uint64_t)ptr;
+  patch["ptr"] = handleStream.str();
   patch["size"] = size;
 
   AddPulseMeasuresToJson(KPulse::AllocateData, patch);
@@ -203,14 +205,15 @@ extern "C" void kokkosp_deallocate_data(Kokkos::Profiling::SpaceHandle handle,
                                         const char *name, void *ptr,
                                         uint64_t size) {
   json patch;
+  std::stringstream handleStream;
 
   MKP::DoDeallocateData();
 
+  handleStream << "0x" << std::hex << ptr;
   patch["hook"] = __FUNCTION__;
   patch["handle"] = handle.name;
   patch["name"] = name;
-  // TODO: Use hex representation
-  patch["ptr"] = (uint64_t)ptr;
+  patch["ptr"] = handleStream.str();
   patch["size"] = size;
 
   AddPulseMeasuresToJson(KPulse::DeallocateData, patch);
@@ -221,17 +224,22 @@ extern "C" void kokkosp_begin_deep_copy(
     const void *dst_ptr, Kokkos::Profiling::SpaceHandle src_handle,
     const char *src_name, const void *src_ptr, uint64_t size) {
   json patch;
+  std::stringstream srcHandleStream;
+  std::stringstream dstHandleStream;
 
   MKP::DoBeginDeepCopy();
+
+  dstHandleStream << "0x" << std::hex << dst_ptr;
+  srcHandleStream << "0x" << std::hex << src_ptr;
 
   patch["hook"] = __FUNCTION__;
   patch["dst_handle"] = dst_handle.name;
   patch["dst_name"] = dst_name;
-  patch["dst_ptr"] = (uint64_t)dst_ptr;
+  patch["dst_ptr"] = dstHandleStream.str();
   patch["src_handle"] = src_handle.name;
   patch["src_name"] = src_name;
-  patch["src_ptr"] = (uint64_t)src_ptr;
-  patch["size"] = (uint64_t)size;
+  patch["src_ptr"] = srcHandleStream.str();
+  patch["size"] = size;
 
   AddPulseMeasuresToJson(KPulse::BeginDeepCopy, patch);
 }
