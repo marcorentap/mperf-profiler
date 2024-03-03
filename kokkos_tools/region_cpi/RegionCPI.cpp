@@ -54,3 +54,26 @@ extern "C" void kokkosp_init_library(const int loadSeq,
   patch["devInfoCount"] = devInfoCount;
   AddPulseMeasuresToJson(KPulse::InitLibrary, patch);
 }
+
+
+extern "C" void kokkosp_push_profile_region(char *regionName) {
+  json patch;
+
+  MKP::DoPushProfileRegion();
+
+  regionNameStack.push(regionName);
+  patch["regionName"] = regionName;
+
+  AddPulseMeasuresToJson(KPulse::PushProfileRegion, patch);
+}
+
+extern "C" void kokkosp_pop_profile_region() {
+  json patch;
+  auto regionNameStr = regionNameStack.top();
+
+  MKP::DoPopProfileRegion();
+
+  patch["regionName"] = regionNameStack.top();
+  AddPulseMeasuresToJson(KPulse::PopProfileRegion, patch);
+  regionNameStack.pop();
+}
