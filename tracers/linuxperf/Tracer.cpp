@@ -1,4 +1,5 @@
 #include <MPerf/Tracers/LinuxPerf.hpp>
+#include <stdexcept>
 
 #include "AllCPUEvents.hpp"
 
@@ -12,10 +13,10 @@ std::unique_ptr<BaseMeasure> Tracer::MakeMeasure(HLMeasureType hlType) {
 
   if (hlType == HLMeasureType::ProcCounters) {
     ptr.reset(new AllCPUEvents(hlType));
-
   } else {
-    ptr.reset(new Measure(hlType));
+    throw std::invalid_argument("Unimplemented HLType");
   }
+
   return ptr;
 }
 
