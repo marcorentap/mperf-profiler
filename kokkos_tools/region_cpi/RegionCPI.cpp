@@ -55,6 +55,11 @@ extern "C" void kokkosp_init_library(const int loadSeq,
   AddPulseMeasuresToJson(KPulse::InitLibrary, patch);
 }
 
+extern "C" void kokkosp_finalize_library() {
+  // Don't measure anything, just write json to file
+  outputFile << rootJson << std::endl;
+}
+
 
 extern "C" void kokkosp_push_profile_region(char *regionName) {
   json patch;
