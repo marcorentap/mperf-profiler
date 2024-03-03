@@ -11,29 +11,29 @@ namespace LinuxPerf {
 ProcMeasure::ProcMeasure(HLMeasureType hlType)
     : Measure(hlType) {
   int inst_fd, cycle_fd;
-  perf_event_attr inst_attr, cycle_attr;
+  perf_event_attr instAttr, cycleAttr;
   auto className = typeid(*this).name();
 
-  memset(&inst_attr, 0, sizeof(inst_attr));
-  memset(&cycle_attr, 0, sizeof(cycle_attr));
+  memset(&instAttr, 0, sizeof(instAttr));
+  memset(&cycleAttr, 0, sizeof(cycleAttr));
 
-  inst_attr.type = PERF_TYPE_HARDWARE;
-  inst_attr.config = PERF_COUNT_HW_INSTRUCTIONS;
-  inst_attr.read_format = PERF_FORMAT_GROUP;
+  instAttr.type = PERF_TYPE_HARDWARE;
+  instAttr.config = PERF_COUNT_HW_INSTRUCTIONS;
+  instAttr.read_format = PERF_FORMAT_GROUP;
 
-  cycle_attr.type = PERF_TYPE_HARDWARE;
-  cycle_attr.config = PERF_COUNT_HW_CPU_CYCLES;
-  cycle_attr.read_format = PERF_FORMAT_GROUP;
+  cycleAttr.type = PERF_TYPE_HARDWARE;
+  cycleAttr.config = PERF_COUNT_HW_CPU_CYCLES;
+  cycleAttr.read_format = PERF_FORMAT_GROUP;
 
   // Use inst_fd as group leader
   // TODO: Do proper exception by skipping the measure instead of exiting
-  inst_fd = perf_event_open(&inst_attr, getpid(), -1, -1, 0);
+  inst_fd = perf_event_open(&instAttr, getpid(), -1, -1, 0);
   if (inst_fd < 0) {
     err(EXIT_FAILURE, "%s cannot open fd for instruction count", className);
   }
   leader_fd = inst_fd;
 
-  cycle_fd = perf_event_open(&cycle_attr, getpid(), -1, inst_fd, 0);
+  cycle_fd = perf_event_open(&cycleAttr, getpid(), -1, inst_fd, 0);
   if (cycle_fd < 0) {
     err(EXIT_FAILURE, "%s cannot open fd for cycle count", className);
   }
