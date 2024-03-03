@@ -43,6 +43,7 @@ extern "C" void kokkosp_push_profile_region(char *regionName) {
   out["regionName"] = regionName;
   out["instructions"] = cpuEvents["insts"];
   out["cycles"] = cpuEvents["cycles"];
+  out["hook"] = __FUNCTION__;
   eventJson.push_back(out);
 }
 
@@ -57,6 +58,7 @@ extern "C" void kokkosp_pop_profile_region() {
   out["regionName"] = regionName;
   out["instructions"] = cpuEvents["insts"];
   out["cycles"] = cpuEvents["cycles"];
+  out["hook"] = __FUNCTION__;
   eventJson.push_back(out);
 
   regionNameStack.pop();
