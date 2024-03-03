@@ -10,7 +10,7 @@ std::unique_ptr<BaseMeasure> Tracer::MakeMeasure(HLMeasureType hlType) {
   using HLType = HLMeasureType;
   std::unique_ptr<BaseMeasure> ptr;
 
-  if (hlType == HLMeasureType::LinuxPerfProc) {
+  if (hlType == HLMeasureType::ProcCounters) {
     ptr.reset(new ProcMeasure(hlType));
 
   } else {

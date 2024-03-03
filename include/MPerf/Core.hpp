@@ -12,11 +12,8 @@ namespace MPerf {
 using json = nlohmann::json;
 
 enum class HLMeasureType {
-  InitDummy,
-  RegionCPI,
-  LibraryCPI,
-  SystemInfo,
-  LinuxPerfProc
+  ProcName,
+  ProcCounters
 };
 
 

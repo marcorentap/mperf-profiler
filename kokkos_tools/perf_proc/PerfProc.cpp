@@ -42,7 +42,7 @@ extern "C" void kokkosp_init_library(const int loadSeq,
   LinuxTracer linuxTracer;
   outputFile.open(outputFileName, std::ofstream::trunc);
 
-  KokkosPAddMeasure(HLType::LinuxPerfProc, linuxTracer, KPulse::All);
+  KokkosPAddMeasure(HLType::ProcCounters, linuxTracer, KPulse::All);
 
   MKP::KokkosPInitLibrary();
 
