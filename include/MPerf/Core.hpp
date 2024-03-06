@@ -13,7 +13,10 @@ using json = nlohmann::json;
 
 enum class HLMeasureType {
   ProcName,
-  ProcCounters
+  ProcCounters,
+  MemorySize,
+  CacheSize,
+  CacheCounters,
 };
 
 
