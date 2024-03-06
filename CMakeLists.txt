@@ -22,6 +22,9 @@ list(APPEND KOKKOS_TOOLS mkt_perf_proc)
 add_subdirectory(kokkos_tools/region_cpi)
 list(APPEND KOKKOS_TOOLS mkt_region_cpi)
 
+add_subdirectory(kokkos_tools/resource_vector)
+list(APPEND KOKKOS_TOOLS mkt_resource_vector)
+
 
 target_link_libraries(MPerfCore ${TRACERS})
 foreach(TRACER IN LISTS TRACERS)
