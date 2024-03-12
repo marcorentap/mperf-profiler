@@ -1,3 +1,5 @@
+#include <MPerf/Core.hpp>
+#include <MPerf/Tracers/LinuxPerf.hpp>
 #include <fstream>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
@@ -5,9 +7,6 @@
 #include <memory>
 #include <sstream>
 #include <stack>
-
-#include "MPerf/Core.hpp"
-#include "MPerf/Tracers/LinuxPerf.hpp"
 
 using json = nlohmann::json;
 using Measure = MPerf::Measure;
