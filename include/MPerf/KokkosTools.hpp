@@ -1,7 +1,6 @@
+#include <MPerf/Core.hpp>
 #include <memory>
 #include <unordered_map>
-
-#include "MPerf/Core.hpp"
 
 namespace MPerf {
 namespace KokkosTools {
@@ -44,7 +43,7 @@ static auto measuresByPulse =
     std::unordered_map<KPulse, std::vector<std::shared_ptr<BaseMeasure>>>{};
 
 inline BaseMeasure &AddMeasure(HLType hlType, BaseTracer &tracer,
-                                      KPulse pulse) {
+                               KPulse pulse) {
   auto sptr = std::shared_ptr<BaseMeasure>();
   sptr = tracer.MakeMeasure(hlType);
 
@@ -97,10 +96,7 @@ inline void PulseDoMeasure(KPulse pulse) {
 }
 
 inline void PulseInitLibrary() { PulseDoMeasure(KPulse::InitLibrary); }
-
-inline void PulseFinalizeLibrary() {
-  PulseDoMeasure(KPulse::FinalizeLibrary);
-}
+inline void PulseFinalizeLibrary() { PulseDoMeasure(KPulse::FinalizeLibrary); }
 inline void PulseBeginParallelFor() { PulseDoMeasure(KPulse::BeginParFor); }
 inline void PulseEndParallelFor() { PulseDoMeasure(KPulse::EndParFor); }
 inline void PulseBeginParallelScan() { PulseDoMeasure(KPulse::BeginParScan); }

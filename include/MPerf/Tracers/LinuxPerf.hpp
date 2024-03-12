@@ -5,9 +5,8 @@
 #include <linux/perf_event.h>
 #include <unistd.h>
 
+#include <MPerf/Core.hpp>
 #include <iostream>
-
-#include "MPerf/Core.hpp"
 
 namespace MPerf {
 namespace Tracers {

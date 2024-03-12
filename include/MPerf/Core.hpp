@@ -1,11 +1,10 @@
 #ifndef MPERF_CORE_HPP
 #define MPERF_CORE_HPP
 
+#include <MPerf/Lib/Json.hpp>
 #include <memory>
 #include <unordered_map>
 #include <vector>
-
-#include "MPerf/Lib/Json.hpp"
 
 namespace MPerf {
 
@@ -19,14 +18,12 @@ enum class HLMeasureType {
   CacheCounters,
 };
 
-
 namespace Tracers {
 namespace Base {
 class Measure {
  public:
   HLMeasureType hlType;
-  Measure(HLMeasureType hlType)
-      : hlType(hlType) {}
+  Measure(HLMeasureType hlType) : hlType(hlType) {}
   virtual void DoMeasure() {}
   virtual json GetJSON() {
     json j;
@@ -37,10 +34,10 @@ class Measure {
 class Tracer {
  public:
   virtual std::unique_ptr<Measure> MakeMeasure(HLMeasureType hlType) {
-     std::unique_ptr<Measure> ptr;
-     ptr.reset(new Measure(hlType));
-     return ptr;
-    }
+    std::unique_ptr<Measure> ptr;
+    ptr.reset(new Measure(hlType));
+    return ptr;
+  }
 };
 }  // namespace Base
 }  // namespace Tracers

@@ -2,8 +2,7 @@
 #define LINUXPERF_PROCMEASURE_HPP
 
 #include <MPerf/Core.hpp>
-
-#include "MPerf/Tracers/LinuxPerf.hpp"
+#include <MPerf/Tracers/LinuxPerf.hpp>
 
 namespace MPerf {
 namespace Tracers {

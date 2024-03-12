@@ -3,7 +3,7 @@
 #include <err.h>
 #include <linux/perf_event.h>
 
-#include "MPerf/Tracers/LinuxPerf.hpp"
+#include <MPerf/Tracers/LinuxPerf.hpp>
 
 namespace MPerf {
 namespace Tracers {
@@ -11,7 +11,8 @@ namespace LinuxPerf {
 
 void AllCPUEvents::PerfEventOpen(uint32_t type, uint64_t config) {
   int fd;
-  perf_event_attr attr{.type = type, .config = config, .read_format = PERF_FORMAT_GROUP};
+  perf_event_attr attr{
+      .type = type, .config = config, .read_format = PERF_FORMAT_GROUP};
 
   if (fds.size() == 0) {
     fd = perf_event_open(&attr, getpid(), -1, -1, 0);

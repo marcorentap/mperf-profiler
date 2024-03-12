@@ -6,7 +6,7 @@ project(MPerf LANGUAGES CXX)
 find_package(Kokkos REQUIRED)
 
 add_subdirectory(core)
-target_include_directories(MPerfCore PRIVATE include)
+target_include_directories(MPerfCore SYSTEM PRIVATE include)
 
 set(KOKKOS_TOOLS)
 set(TRACERS)
@@ -28,11 +28,11 @@ list(APPEND KOKKOS_TOOLS mkt_resource_vector)
 
 target_link_libraries(MPerfCore ${TRACERS})
 foreach(TRACER IN LISTS TRACERS)
-  target_include_directories(${TRACER} PRIVATE include)
+  target_include_directories(${TRACER} SYSTEM PRIVATE include)
 endforeach()
 
 foreach(TOOL IN LISTS KOKKOS_TOOLS)
-  target_include_directories(${TOOL} PRIVATE include)
+  target_include_directories(${TOOL} SYSTEM PRIVATE include)
   target_link_libraries(${TOOL} MPerfCore ${TRACERS})
 endforeach()
 

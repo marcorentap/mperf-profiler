@@ -1,13 +1,12 @@
+#include <MPerf/Core.hpp>
+#include <MPerf/KokkosTools.hpp>
+#include <MPerf/Tracers/LinuxPerf.hpp>
 #include <fstream>
 #include <impl/Kokkos_Profiling_DeviceInfo.hpp>
 #include <impl/Kokkos_Profiling_Interface.hpp>
 #include <iostream>
 #include <sstream>
 #include <stack>
-
-#include "MPerf/Core.hpp"
-#include "MPerf/KokkosTools.hpp"
-#include "MPerf/Tracers/LinuxPerf.hpp"
 
 namespace MKP = MPerf::KokkosTools;
 using HLType = MKP::HLType;
