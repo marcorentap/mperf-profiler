@@ -1,5 +1,5 @@
-#ifndef LINUXPERF_PROCMEASURE_HPP
-#define LINUXPERF_PROCMEASURE_HPP
+#ifndef LINUXPERF_ALLCPUEVENTS_HPP
+#define LINUXPERF_ALLCPUEVENTS_HPP
 
 #include <MPerf/Core.hpp>
 #include <MPerf/Tracers/LinuxPerf.hpp>
