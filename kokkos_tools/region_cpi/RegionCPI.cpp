@@ -46,8 +46,8 @@ extern "C" void kokkosp_finalize_library() {
       json regionBegin = eventStack.top();
       std::string regionName = regionBegin["region_name"];
 
-      uint64_t beginInsts = regionBegin["instructions"];
-      uint64_t endInsts = regionEnd["instructions"];
+      uint64_t beginInsts = regionBegin["insts"];
+      uint64_t endInsts = regionEnd["insts"];
       uint64_t beginCycles = regionBegin["cycles"];
       uint64_t endCycles = regionEnd["cycles"];
       uint64_t instDiff = endInsts - beginInsts;
@@ -85,7 +85,7 @@ extern "C" void kokkosp_push_profile_region(char *regionName) {
 
   regionNameStack.push(regionName);
   out["region_name"] = regionName;
-  out["instructions"] = cpuEvents["insts"];
+  out["insts"] = cpuEvents["insts"];
   out["cycles"] = cpuEvents["cycles"];
   out["hook"] = __FUNCTION__;
   eventJson.push_back(out);
@@ -100,7 +100,7 @@ extern "C" void kokkosp_pop_profile_region() {
   regionName = regionNameStack.top();
 
   out["region_name"] = regionName;
-  out["instructions"] = cpuEvents["insts"];
+  out["insts"] = cpuEvents["insts"];
   out["cycles"] = cpuEvents["cycles"];
   out["hook"] = __FUNCTION__;
   eventJson.push_back(out);

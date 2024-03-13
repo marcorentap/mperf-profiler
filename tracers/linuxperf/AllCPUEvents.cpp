@@ -50,12 +50,12 @@ void AllCPUEvents::DoMeasure() {
 
 json AllCPUEvents::GetJSON() {
   json j;
-  j["measureName"] = "Linux Perf CPU Measure";
+  j["measure_name"] = "Linux Perf CPU Measure";
   j["cycles"] = result.cycles;
   j["insts"] = result.insts;
-  j["branchInsts"] = result.branchInsts;
-  j["branchMisses"] = result.branchMisses;
-  j["busCycles"] = result.busCycles;
+  j["branch_insts"] = result.branchInsts;
+  j["branch_misses"] = result.branchMisses;
+  j["bus_cycles"] = result.busCycles;
   // These are not available :(
   // j["stalledCycleFront"] = result.stalledCycleFront;
   // j["stalledCyclesBack"] = result.stalledCyclesBack;
