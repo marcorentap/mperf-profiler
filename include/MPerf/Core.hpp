@@ -16,6 +16,13 @@ enum class HLMeasureType {
   MemorySize,
   CacheSize,
   CacheCounters,
+  CacheL1D,
+  CacheL1I,
+  CacheLL,
+  CacheDTLB,
+  CacheITLB,
+  CacheBPU,
+  CacheNode
 };
 
 namespace Tracers {

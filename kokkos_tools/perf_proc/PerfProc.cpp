@@ -42,7 +42,8 @@ extern "C" void kokkosp_init_library(const int loadSeq,
   LinuxTracer linuxTracer;
   outputFile.open(outputFileName, std::ofstream::trunc);
 
-  AddMeasure(HLType::ProcCounters, linuxTracer, KPulse::All);
+  // AddMeasure(HLType::ProcCounters, linuxTracer, KPulse::All);
+  AddMeasure(HLType::CacheL1D, linuxTracer, KPulse::All);
 
   MKP::PulseInitLibrary();
 
