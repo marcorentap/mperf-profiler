@@ -18,7 +18,7 @@ constexpr auto outputTraceFileName = "mperf_trace_region.json";
 std::stack<std::string> regionNameStack;
 std::unordered_map<std::string, std::vector<double>> regionCPIs;
 std::ofstream outputFile, outputTraceFile;
-json eventJson, cpiJson;
+json eventJson, traceJson;
 std::unique_ptr<Measure> cpuEventMeasure;
 
 extern "C" void kokkosp_init_library(const int loadSeq,
@@ -77,6 +77,7 @@ extern "C" void kokkosp_finalize_library() {
   }
 
   outputFile << outJson << std::endl;
+  outputTraceFile << eventJson << std::endl;
 }
 
 extern "C" void kokkosp_push_profile_region(char *regionName) {
@@ -90,8 +91,6 @@ extern "C" void kokkosp_push_profile_region(char *regionName) {
   out["region_name"] = regionName;
   out["hook"] = __FUNCTION__;
   eventJson.push_back(out);
-
-  outputTraceFile << out;
 }
 
 extern "C" void kokkosp_pop_profile_region() {
@@ -109,5 +108,4 @@ extern "C" void kokkosp_pop_profile_region() {
   eventJson.push_back(out);
 
   regionNameStack.pop();
-  outputTraceFile << out;
 }
