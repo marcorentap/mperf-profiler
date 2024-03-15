@@ -59,22 +59,8 @@ class Measure : public ::MPerf::Measure {
     }
   }
 
-  virtual void DoMeasure() {
-    memset(&result, 0, sizeof(result));
-    int ret = read(leader_fd, &result, sizeof(result));
-    if (ret < 0) {
-      exit(EXIT_FAILURE);
-    }
-  }
-  virtual json GetJSON() {
-    json j;
-    for (auto &item : labelToResultIndex) {
-      auto label = item.first;
-      auto index = item.second;
-      j[label] = result.values[index];
-    }
-    return j;
-  }
+  virtual void DoMeasure();
+  virtual json GetJSON();
 };
 
 }  // namespace LinuxPerf

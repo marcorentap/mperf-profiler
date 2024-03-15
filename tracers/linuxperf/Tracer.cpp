@@ -41,6 +41,23 @@ void Measure::PerfEventOpen(std::string label, uint32_t type, uint64_t config) {
   fds.push_back(fd);
 }
 
+  void Measure::DoMeasure() {
+    memset(&result, 0, sizeof(result));
+    int ret = read(leader_fd, &result, sizeof(result));
+    if (ret < 0) {
+      exit(EXIT_FAILURE);
+    }
+  }
+  json Measure::GetJSON() {
+    json j;
+    for (auto &item : labelToResultIndex) {
+      auto label = item.first;
+      auto index = item.second;
+      j[label] = result.values[index];
+    }
+    return j;
+  }
+
 std::unique_ptr<::MPerf::Measure> Tracer::MakeMeasure(HLMeasureType hlType) {
   using HLType = HLMeasureType;
   std::unique_ptr<::MPerf::Measure> ptr;
