@@ -19,6 +19,9 @@ list(APPEND TRACERS LinuxPerfTracer)
 add_subdirectory(kokkos_tools/perf_proc)
 list(APPEND KOKKOS_TOOLS mkt_perf_proc)
 
+add_subdirectory(kokkos_tools/trace_all)
+list(APPEND KOKKOS_TOOLS mkt_trace_all)
+
 add_subdirectory(kokkos_tools/region_cpi)
 list(APPEND KOKKOS_TOOLS mkt_region_cpi)
 

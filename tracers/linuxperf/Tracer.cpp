@@ -31,9 +31,7 @@ void Measure::PerfEventOpen(std::string label, uint32_t type, uint64_t config) {
 
   // Skip if event not available
   if (fd < 0) {
-    std::cerr << "WARNING: " << __FUNCTION__ << " cannot open fd";
-    std::cerr << " for type " << type;
-    std::cerr << " config " << config << "\n";
+    throw std::invalid_argument("Cannot open type and config");
     return;
   }
 

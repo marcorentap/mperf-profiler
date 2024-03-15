@@ -1,34 +1,58 @@
 #ifndef LINUXPERF_CACHEEVENTS_HPP
 #define LINUXPERF_CACHEEVENTS_HPP
 
+#include <linux/perf_event.h>
+
 #include <MPerf/Core.hpp>
 #include <MPerf/Tracers/LinuxPerf.hpp>
+#include <stdexcept>
 
 namespace MPerf {
 namespace Tracers {
 namespace LinuxPerf {
 
 class CacheEvents : public Measure {
+ private:
+  std::vector<std::string> op_names = {"read", "write", "prefetch"};
+  std::vector<std::string> op_result_names = {"access", "miss"};
+
  public:
-  CacheEvents(std::string name, uint64_t id) {
-    PerfEventOpen(name + "_read_access", PERF_TYPE_HW_CACHE,
-                  MakeCacheConfig(id, PERF_COUNT_HW_CACHE_OP_READ,
-                                  PERF_COUNT_HW_CACHE_RESULT_ACCESS));
-    PerfEventOpen(name + "_read_miss", PERF_TYPE_HW_CACHE,
-                  MakeCacheConfig(id, PERF_COUNT_HW_CACHE_OP_READ,
-                                  PERF_COUNT_HW_CACHE_RESULT_MISS));
-    PerfEventOpen(name + "_write_access", PERF_TYPE_HW_CACHE,
-                  MakeCacheConfig(id, PERF_COUNT_HW_CACHE_OP_WRITE,
-                                  PERF_COUNT_HW_CACHE_RESULT_ACCESS));
-    PerfEventOpen(name + "_write_miss", PERF_TYPE_HW_CACHE,
-                  MakeCacheConfig(id, PERF_COUNT_HW_CACHE_OP_WRITE,
-                                  PERF_COUNT_HW_CACHE_RESULT_MISS));
-    PerfEventOpen(name + "_prefetch_access", PERF_TYPE_HW_CACHE,
-                  MakeCacheConfig(id, PERF_COUNT_HW_CACHE_OP_PREFETCH,
-                                  PERF_COUNT_HW_CACHE_RESULT_ACCESS));
-    PerfEventOpen(name + "_prefetch_miss", PERF_TYPE_HW_CACHE,
-                  MakeCacheConfig(id, PERF_COUNT_HW_CACHE_OP_PREFETCH,
-                                  PERF_COUNT_HW_CACHE_RESULT_MISS));
+  CacheEvents(std::string cache_name, uint64_t cache_id) {
+    uint64_t max_id = PERF_COUNT_HW_CACHE_OP_MAX;
+    uint64_t max_result_id = PERF_COUNT_HW_CACHE_RESULT_MAX;
+    for (auto op_id = 0; op_id < 2; op_id++) {
+      for (auto op_result_id = 0; op_result_id < 2;
+           op_result_id++) {
+        auto op_name = op_names[op_id];
+        auto op_result_name = op_result_names[op_result_id];
+        auto event_name = cache_name + "_" + op_name + "_" + op_result_name;
+        uint64_t config = MakeCacheConfig(cache_id, op_id, op_result_id);
+        try {
+          PerfEventOpen(event_name, PERF_TYPE_HW_CACHE, config);
+
+        } catch (std::invalid_argument e) {
+          std::cerr << "cannot open cache event " << event_name << "\n";
+        }
+      }
+    }
+    // PerfEventOpen(cache_name + "_read_access", PERF_TYPE_HW_CACHE,
+    //               MakeCacheConfig(cache_id, PERF_COUNT_HW_CACHE_OP_READ,
+    //                               PERF_COUNT_HW_CACHE_RESULT_ACCESS));
+    // PerfEventOpen(cache_name + "_read_miss", PERF_TYPE_HW_CACHE,
+    //               MakeCacheConfig(cache_id, PERF_COUNT_HW_CACHE_OP_READ,
+    //                               PERF_COUNT_HW_CACHE_RESULT_MISS));
+    // PerfEventOpen(cache_name + "_write_access", PERF_TYPE_HW_CACHE,
+    //               MakeCacheConfig(cache_id, PERF_COUNT_HW_CACHE_OP_WRITE,
+    //                               PERF_COUNT_HW_CACHE_RESULT_ACCESS));
+    // PerfEventOpen(cache_name + "_write_miss", PERF_TYPE_HW_CACHE,
+    //               MakeCacheConfig(cache_id, PERF_COUNT_HW_CACHE_OP_WRITE,
+    //                               PERF_COUNT_HW_CACHE_RESULT_MISS));
+    // PerfEventOpen(cache_name + "_prefetch_access", PERF_TYPE_HW_CACHE,
+    //               MakeCacheConfig(cache_id, PERF_COUNT_HW_CACHE_OP_PREFETCH,
+    //                               PERF_COUNT_HW_CACHE_RESULT_ACCESS));
+    // PerfEventOpen(cache_name + "_prefetch_miss", PERF_TYPE_HW_CACHE,
+    //               MakeCacheConfig(cache_id, PERF_COUNT_HW_CACHE_OP_PREFETCH,
+    //                               PERF_COUNT_HW_CACHE_RESULT_MISS));
   }
 };
 
