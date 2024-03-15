@@ -1,6 +1,7 @@
 #include <err.h>
 
 #include <MPerf/Tracers/LinuxPerf.hpp>
+#include <cstdio>
 #include <stdexcept>
 
 #include "AllCPUEvents.hpp"
@@ -11,6 +12,12 @@ namespace Tracers {
 namespace LinuxPerf {
 
 void Measure::PerfEventOpen(uint32_t type, uint64_t config) {
+  auto typeString = std::to_string(type);
+  auto configString = std::to_string(config);
+  PerfEventOpen("unknown" + typeString + configString, type, config);
+}
+
+void Measure::PerfEventOpen(std::string label, uint32_t type, uint64_t config) {
   int fd;
   perf_event_attr attr{
       .type = type, .config = config, .read_format = PERF_FORMAT_GROUP};
@@ -22,10 +29,15 @@ void Measure::PerfEventOpen(uint32_t type, uint64_t config) {
     fd = perf_event_open(&attr, getpid(), -1, leader_fd, 0);
   }
 
+  // Skip if event not available
   if (fd < 0) {
-    err(EXIT_FAILURE, "cannot open fd for type %u config %lu", type, config);
+    std::cerr << "WARNING: " << __FUNCTION__ << " cannot open fd ";
+    std::cerr << " for type " << type;
+    std::cerr << " config " << config << "\n";
+    return;
   }
 
+  labelToResultIndex[label] = fds.size();
   fds.push_back(fd);
 }
 
