@@ -36,7 +36,7 @@ class CacheEvents : public Measure {
 class L1DCacheEvents : public CacheEvents {
  public:
   L1DCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "l1i", PERF_COUNT_HW_CACHE_L1D) {}
+      : CacheEvents(hlType, "l1d", PERF_COUNT_HW_CACHE_L1D) {}
 };
 
 class L1ICacheEvents : public CacheEvents {
@@ -48,31 +48,31 @@ class L1ICacheEvents : public CacheEvents {
 class LLCacheEvents : public CacheEvents {
  public:
   LLCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "l1i", PERF_COUNT_HW_CACHE_LL) {}
+      : CacheEvents(hlType, "ll", PERF_COUNT_HW_CACHE_LL) {}
 };
 
 class DTLBCacheEvents : public CacheEvents {
  public:
   DTLBCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "l1i", PERF_COUNT_HW_CACHE_DTLB) {}
+      : CacheEvents(hlType, "dtlb", PERF_COUNT_HW_CACHE_DTLB) {}
 };
 
 class ITLBCacheEvents : public CacheEvents {
  public:
   ITLBCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "l1i", PERF_COUNT_HW_CACHE_ITLB) {}
+      : CacheEvents(hlType, "itlb", PERF_COUNT_HW_CACHE_ITLB) {}
 };
 
 class BPUCacheEvents : public CacheEvents {
  public:
   BPUCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "l1i", PERF_COUNT_HW_CACHE_BPU) {}
+      : CacheEvents(hlType, "bpu", PERF_COUNT_HW_CACHE_BPU) {}
 };
 
 class NODECacheEvents : public CacheEvents {
  public:
   NODECacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "l1i", PERF_COUNT_HW_CACHE_NODE) {}
+      : CacheEvents(hlType, "node", PERF_COUNT_HW_CACHE_NODE) {}
 };
 
 }  // namespace LinuxPerf
