@@ -51,8 +51,6 @@ class Measure : public ::MPerf::Measure {
   int leader_fd;
 
  public:
-  Measure(HLMeasureType hlType) : ::MPerf::Measure(hlType) {}
-
   ~Measure() {
     for (auto &fd : fds) {
       close(fd);

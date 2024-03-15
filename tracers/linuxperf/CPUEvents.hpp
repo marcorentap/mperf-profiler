@@ -10,7 +10,7 @@ namespace LinuxPerf {
 
 class CPUEvents : public Measure {
  public:
-  CPUEvents(HLMeasureType hlType) : Measure::Measure(hlType) {
+  CPUEvents() {
     PerfEventOpen("hw_cpu_cycles", PERF_TYPE_HARDWARE,
                   PERF_COUNT_HW_CPU_CYCLES);
     PerfEventOpen("hw_instructions", PERF_TYPE_HARDWARE,

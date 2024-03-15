@@ -10,8 +10,7 @@ namespace LinuxPerf {
 
 class CacheEvents : public Measure {
  public:
-  CacheEvents(HLMeasureType hlType, std::string name, uint64_t id)
-      : Measure(hlType) {
+  CacheEvents(std::string name, uint64_t id) {
     PerfEventOpen(name + "_read_access", PERF_TYPE_HW_CACHE,
                   MakeCacheConfig(id, PERF_COUNT_HW_CACHE_OP_READ,
                                   PERF_COUNT_HW_CACHE_RESULT_ACCESS));
@@ -35,44 +34,37 @@ class CacheEvents : public Measure {
 
 class L1DCacheEvents : public CacheEvents {
  public:
-  L1DCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "l1d", PERF_COUNT_HW_CACHE_L1D) {}
+  L1DCacheEvents() : CacheEvents("l1d", PERF_COUNT_HW_CACHE_L1D) {}
 };
 
 class L1ICacheEvents : public CacheEvents {
  public:
-  L1ICacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "l1i", PERF_COUNT_HW_CACHE_L1I) {}
+  L1ICacheEvents() : CacheEvents("l1i", PERF_COUNT_HW_CACHE_L1I) {}
 };
 
 class LLCacheEvents : public CacheEvents {
  public:
-  LLCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "ll", PERF_COUNT_HW_CACHE_LL) {}
+  LLCacheEvents() : CacheEvents("ll", PERF_COUNT_HW_CACHE_LL) {}
 };
 
 class DTLBCacheEvents : public CacheEvents {
  public:
-  DTLBCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "dtlb", PERF_COUNT_HW_CACHE_DTLB) {}
+  DTLBCacheEvents() : CacheEvents("dtlb", PERF_COUNT_HW_CACHE_DTLB) {}
 };
 
 class ITLBCacheEvents : public CacheEvents {
  public:
-  ITLBCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "itlb", PERF_COUNT_HW_CACHE_ITLB) {}
+  ITLBCacheEvents() : CacheEvents("itlb", PERF_COUNT_HW_CACHE_ITLB) {}
 };
 
 class BPUCacheEvents : public CacheEvents {
  public:
-  BPUCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "bpu", PERF_COUNT_HW_CACHE_BPU) {}
+  BPUCacheEvents() : CacheEvents("bpu", PERF_COUNT_HW_CACHE_BPU) {}
 };
 
 class NodeCacheEvents : public CacheEvents {
  public:
-  NodeCacheEvents(HLMeasureType hlType)
-      : CacheEvents(hlType, "node", PERF_COUNT_HW_CACHE_NODE) {}
+  NodeCacheEvents() : CacheEvents("node", PERF_COUNT_HW_CACHE_NODE) {}
 };
 
 }  // namespace LinuxPerf

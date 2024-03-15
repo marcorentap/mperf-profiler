@@ -29,8 +29,7 @@ namespace Tracers {
 namespace Base {
 class Measure {
  public:
-  HLMeasureType hlType;
-  Measure(HLMeasureType hlType) : hlType(hlType) {}
+  Measure() {}
   virtual void DoMeasure() {}
   virtual json GetJSON() {
     json j;
@@ -42,7 +41,7 @@ class Tracer {
  public:
   virtual std::unique_ptr<Measure> MakeMeasure(HLMeasureType hlType) {
     std::unique_ptr<Measure> ptr;
-    ptr.reset(new Measure(hlType));
+    ptr.reset(new Measure());
     return ptr;
   }
 };

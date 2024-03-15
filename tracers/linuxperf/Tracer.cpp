@@ -63,21 +63,21 @@ std::unique_ptr<::MPerf::Measure> Tracer::MakeMeasure(HLMeasureType hlType) {
   std::unique_ptr<::MPerf::Measure> ptr;
 
   if (hlType == HLMeasureType::ProcCounters) {
-    ptr.reset(new CPUEvents(hlType));
+    ptr.reset(new CPUEvents());
   } else if (hlType == HLMeasureType::CacheL1D) {
-    ptr.reset(new L1DCacheEvents(hlType));
+    ptr.reset(new L1DCacheEvents());
   } else if (hlType == HLMeasureType::CacheL1I) {
-    ptr.reset(new L1ICacheEvents(hlType));
+    ptr.reset(new L1ICacheEvents());
   } else if (hlType == HLMeasureType::CacheLL) {
-    ptr.reset(new LLCacheEvents(hlType));
+    ptr.reset(new LLCacheEvents());
   } else if (hlType == HLMeasureType::CacheDTLB) {
-    ptr.reset(new DTLBCacheEvents(hlType));
+    ptr.reset(new DTLBCacheEvents());
   } else if (hlType == HLMeasureType::CacheITLB) {
-    ptr.reset(new ITLBCacheEvents(hlType));
+    ptr.reset(new ITLBCacheEvents());
   } else if (hlType == HLMeasureType::CacheBPU) {
-    ptr.reset(new BPUCacheEvents(hlType));
+    ptr.reset(new BPUCacheEvents());
   } else if (hlType == HLMeasureType::CacheNode) {
-    ptr.reset(new NodeCacheEvents(hlType));
+    ptr.reset(new NodeCacheEvents());
   } else {
     throw std::invalid_argument("Unimplemented HLType");
   }
