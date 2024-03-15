@@ -44,6 +44,7 @@ class Measure : public ::MPerf::Measure {
                                       // group and per measure
   } result;
   std::vector<int> fds;
+  // For use in fd and result.values
   std::unordered_map<std::string, int> labelToResultIndex;
   void PerfEventOpen(uint32_t type, uint64_t config);
   void PerfEventOpen(std::string label, uint32_t type, uint64_t config);
