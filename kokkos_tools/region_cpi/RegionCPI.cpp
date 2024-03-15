@@ -13,10 +13,11 @@ using json = nlohmann::json;
 using Measure = MPerf::Measure;
 using PerfTracer = MPerf::Tracers::LinuxPerf::Tracer;
 constexpr auto outputFileName = "mperf_region_cpi.json";
+constexpr auto outputTraceFileName = "mperf_trace_region.json";
 
 std::stack<std::string> regionNameStack;
 std::unordered_map<std::string, std::vector<double>> regionCPIs;
-std::ofstream outputFile;
+std::ofstream outputFile, outputTraceFile;
 json eventJson, cpiJson;
 std::unique_ptr<Measure> cpuEventMeasure;
 
@@ -28,6 +29,7 @@ extern "C" void kokkosp_init_library(const int loadSeq,
   auto perfTracer = PerfTracer();
   cpuEventMeasure = perfTracer.MakeMeasure(MPerf::HLMeasureType::ProcCounters);
   outputFile.open(outputFileName, std::ofstream::trunc);
+  outputTraceFile.open(outputTraceFileName, std::ofstream::trunc);
 }
 
 extern "C" void kokkosp_finalize_library() {
@@ -46,10 +48,10 @@ extern "C" void kokkosp_finalize_library() {
       json regionBegin = eventStack.top();
       std::string regionName = regionBegin["region_name"];
 
-      uint64_t beginInsts = regionBegin["insts"];
-      uint64_t endInsts = regionEnd["insts"];
-      uint64_t beginCycles = regionBegin["cycles"];
-      uint64_t endCycles = regionEnd["cycles"];
+      uint64_t beginInsts = regionBegin["hw_instructions"];
+      uint64_t endInsts = regionEnd["hw_instructions"];
+      uint64_t beginCycles = regionBegin["hw_cpu_cycles"];
+      uint64_t endCycles = regionEnd["hw_cpu_cycles"];
       uint64_t instDiff = endInsts - beginInsts;
       uint64_t cycleDiff = endCycles - beginCycles;
       double CPI = (double)cycleDiff / instDiff;
@@ -81,14 +83,15 @@ extern "C" void kokkosp_push_profile_region(char *regionName) {
   json out, cpuEvents;
 
   cpuEventMeasure->DoMeasure();
-  cpuEvents = cpuEventMeasure->GetJSON();
+
+  out.update(cpuEventMeasure->GetJSON());
 
   regionNameStack.push(regionName);
   out["region_name"] = regionName;
-  out["insts"] = cpuEvents["insts"];
-  out["cycles"] = cpuEvents["cycles"];
   out["hook"] = __FUNCTION__;
   eventJson.push_back(out);
+
+  outputTraceFile << out;
 }
 
 extern "C" void kokkosp_pop_profile_region() {
@@ -96,14 +99,15 @@ extern "C" void kokkosp_pop_profile_region() {
   std::string regionName;
 
   cpuEventMeasure->DoMeasure();
-  cpuEvents = cpuEventMeasure->GetJSON();
+
+  out.update(cpuEventMeasure->GetJSON());
+
   regionName = regionNameStack.top();
 
   out["region_name"] = regionName;
-  out["insts"] = cpuEvents["insts"];
-  out["cycles"] = cpuEvents["cycles"];
   out["hook"] = __FUNCTION__;
   eventJson.push_back(out);
 
   regionNameStack.pop();
+  outputTraceFile << out;
 }

@@ -39,13 +39,14 @@ class Measure : public ::MPerf::Measure {
     uint64_t config;
   };
   struct ReadFormat {
-    uint64_t value;        /* The value of the event */
-    uint64_t time_enabled; /* if PERF_FORMAT_TOTAL_TIME_ENABLED */
-    uint64_t time_running; /* if PERF_FORMAT_TOTAL_TIME_RUNNING */
-    uint64_t id;           /* if PERF_FORMAT_ID */
-  };
+    uint64_t nr;                      // Number of events
+    std::array<uint64_t, 64> values;  // Allow maximum of 64 events per
+                                      // group and per measure
+  } result;
   std::vector<int> fds;
+  std::unordered_map<std::string, int> labelToResultIndex;
   void PerfEventOpen(uint32_t type, uint64_t config);
+  void PerfEventOpen(std::string label, uint32_t type, uint64_t config);
   int leader_fd;
 
  public:
@@ -57,10 +58,20 @@ class Measure : public ::MPerf::Measure {
     }
   }
 
-  virtual void DoMeasure() {}
+  virtual void DoMeasure() {
+    memset(&result, 0, sizeof(result));
+    int ret = read(leader_fd, &result, sizeof(result));
+    if (ret < 0) {
+      exit(EXIT_FAILURE);
+    }
+  }
   virtual json GetJSON() {
     json j;
-    j["measureName"] = "Default Linux Perf Measure";
+    for (auto &item : labelToResultIndex) {
+      auto label = item.first;
+      auto index = item.second;
+      j[label] = result.values[index];
+    }
     return j;
   }
 };
