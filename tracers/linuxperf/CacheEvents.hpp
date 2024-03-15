@@ -69,9 +69,9 @@ class BPUCacheEvents : public CacheEvents {
       : CacheEvents(hlType, "bpu", PERF_COUNT_HW_CACHE_BPU) {}
 };
 
-class NODECacheEvents : public CacheEvents {
+class NodeCacheEvents : public CacheEvents {
  public:
-  NODECacheEvents(HLMeasureType hlType)
+  NodeCacheEvents(HLMeasureType hlType)
       : CacheEvents(hlType, "node", PERF_COUNT_HW_CACHE_NODE) {}
 };
 
