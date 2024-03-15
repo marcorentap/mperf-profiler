@@ -4,8 +4,8 @@
 #include <cstdio>
 #include <stdexcept>
 
-#include "AllCPUEvents.hpp"
-#include "L1DCacheEvents.hpp"
+#include "CPUEvents.hpp"
+#include "CacheEvents.hpp"
 
 namespace MPerf {
 namespace Tracers {
@@ -31,7 +31,7 @@ void Measure::PerfEventOpen(std::string label, uint32_t type, uint64_t config) {
 
   // Skip if event not available
   if (fd < 0) {
-    std::cerr << "WARNING: " << __FUNCTION__ << " cannot open fd ";
+    std::cerr << "WARNING: " << __FUNCTION__ << " cannot open fd";
     std::cerr << " for type " << type;
     std::cerr << " config " << config << "\n";
     return;
@@ -63,7 +63,7 @@ std::unique_ptr<::MPerf::Measure> Tracer::MakeMeasure(HLMeasureType hlType) {
   std::unique_ptr<::MPerf::Measure> ptr;
 
   if (hlType == HLMeasureType::ProcCounters) {
-    ptr.reset(new AllCPUEvents(hlType));
+    ptr.reset(new CPUEvents(hlType));
   } else if (hlType == HLMeasureType::CacheL1D) {
     ptr.reset(new L1DCacheEvents(hlType));
   } else {
