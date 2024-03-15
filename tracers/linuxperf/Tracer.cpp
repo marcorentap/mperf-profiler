@@ -66,6 +66,18 @@ std::unique_ptr<::MPerf::Measure> Tracer::MakeMeasure(HLMeasureType hlType) {
     ptr.reset(new CPUEvents(hlType));
   } else if (hlType == HLMeasureType::CacheL1D) {
     ptr.reset(new L1DCacheEvents(hlType));
+  } else if (hlType == HLMeasureType::CacheL1I) {
+    ptr.reset(new L1ICacheEvents(hlType));
+  } else if (hlType == HLMeasureType::CacheLL) {
+    ptr.reset(new LLCacheEvents(hlType));
+  } else if (hlType == HLMeasureType::CacheDTLB) {
+    ptr.reset(new DTLBCacheEvents(hlType));
+  } else if (hlType == HLMeasureType::CacheITLB) {
+    ptr.reset(new ITLBCacheEvents(hlType));
+  } else if (hlType == HLMeasureType::CacheBPU) {
+    ptr.reset(new BPUCacheEvents(hlType));
+  } else if (hlType == HLMeasureType::CacheNode) {
+    ptr.reset(new NodeCacheEvents(hlType));
   } else {
     throw std::invalid_argument("Unimplemented HLType");
   }
