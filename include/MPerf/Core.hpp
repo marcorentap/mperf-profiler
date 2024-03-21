@@ -38,9 +38,16 @@ class Measure {
   }
 };
 class Tracer {
+  using bMeasurePtr = std::unique_ptr<Measure>;
+
  public:
-  virtual std::unique_ptr<Measure> MakeMeasure(HLMeasureType hlType) {
-    std::unique_ptr<Measure> ptr;
+  virtual bMeasurePtr MakeMeasure(HLMeasureType hlType) {
+    bMeasurePtr ptr;
+    ptr.reset(new Measure());
+    return ptr;
+  }
+  virtual bMeasurePtr MakeMeasure(std::vector<HLMeasureType> hlTypes) {
+    bMeasurePtr ptr;
     ptr.reset(new Measure());
     return ptr;
   }
