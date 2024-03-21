@@ -62,10 +62,9 @@ uPtrBMeasure Tracer::MakeMeasure(std::vector<HLMeasureType> hlTypes) {
   uPtrLinuxMeasure ptr;
   ptr.reset(new Measure());
   for (auto &hlType : hlTypes) {
-    auto args = hlArgsMap[hlType];
-    auto label = std::get<0>(args);
-    auto type = std::get<1>(args);
-    auto config = std::get<2>(args);
+    auto label = hlTolabel[hlType];
+    auto type = hlToType[hlType];
+    auto config = hlToConfig[hlType];
     ptr->PerfEventOpen(label, type, config);
   }
   return ptr;

@@ -14,6 +14,7 @@ namespace LinuxPerf {
 
 using uPtrBMeasure = std::unique_ptr<Tracers::Base::Measure>;
 using uPtrBTracer = std::unique_ptr<Tracers::Base::Tracer>;
+using HLMType = HLMeasureType;
 
 class CPUEvents;
 
@@ -33,23 +34,48 @@ class Tracer : public ::MPerf::Tracer {
   // Mapping from hlType to label, config and type
  private:
   using hlConfigMapType =
-      std::unordered_map<HLMeasureType,
-                         std::tuple<std::string, uint32_t, uint64_t>>;
-  hlConfigMapType hlArgsMap = {
-      {HLMeasureType::HWCPUCycles, {"hw_cpu_cycles", PERF_TYPE_HARDWARE, PERF_COUNT_HW_CPU_CYCLES}},
-      {HLMeasureType::HWInstructions, {"hw_instructions", PERF_TYPE_HARDWARE, PERF_COUNT_HW_INSTRUCTIONS}},
-      {HLMeasureType::HWCacheReferences, {"hw_cache_references", PERF_TYPE_HARDWARE, PERF_COUNT_HW_CACHE_REFERENCES}},
-      {HLMeasureType::HWCacheMisses, {"hw_cache_misses", PERF_TYPE_HARDWARE, PERF_COUNT_HW_CACHE_MISSES}},
-      {HLMeasureType::HWBranchInstructions, {"hw_branch_instructions", PERF_TYPE_HARDWARE, PERF_COUNT_HW_BRANCH_INSTRUCTIONS}},
-      {HLMeasureType::HWStalledCyclesFrontend, {"hw_stalled_cycles_frontend", PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_FRONTEND}},
-      {HLMeasureType::HWStalledCyclesBackend, {"hw_stalled_cycles_backend", PERF_TYPE_HARDWARE, PERF_COUNT_HW_STALLED_CYCLES_BACKEND}},
-      {HLMeasureType::HWRefCPUCycles, {"hw_ref_cpu_cycles", PERF_TYPE_HARDWARE, PERF_COUNT_HW_REF_CPU_CYCLES}},
-      };
+      std::unordered_map<HLMType, std::tuple<std::string, uint32_t, uint64_t>>;
+  using hlToLabelType = std::unordered_map<HLMType, std::string>;
+  using hlToTypeType = std::unordered_map<HLMType, uint32_t>;
+  using hlToConfigType = std::unordered_map<HLMType, uint64_t>;
+
+  hlToLabelType hlTolabel = {
+      {HLMType::HWCPUCycles, "hw_cpu_cycles"},
+      {HLMType::HWInstructions, "hw_instructions"},
+      {HLMType::HWCacheReferences, "hw_cache_references"},
+      {HLMType::HWCacheMisses, "hw_cache_misses"},
+      {HLMType::HWBranchInstructions, "hw_branch_instructions"},
+      {HLMType::HWStalledCyclesFrontend, "hw_stalled_cycles_frontend"},
+      {HLMType::HWStalledCyclesBackend, "hw_stalled_cycles_backend"},
+      {HLMType::HWRefCPUCycles, "hw_ref_cpu_cycles"},
+  };
+
+  hlToTypeType hlToType = {
+      {HLMType::HWCPUCycles, PERF_TYPE_HARDWARE},
+      {HLMType::HWInstructions, PERF_TYPE_HARDWARE},
+      {HLMType::HWCacheReferences, PERF_TYPE_HARDWARE},
+      {HLMType::HWCacheMisses, PERF_TYPE_HARDWARE},
+      {HLMType::HWBranchInstructions, PERF_TYPE_HARDWARE},
+      {HLMType::HWStalledCyclesFrontend, PERF_TYPE_HARDWARE},
+      {HLMType::HWStalledCyclesBackend, PERF_TYPE_HARDWARE},
+      {HLMType::HWRefCPUCycles, PERF_TYPE_HARDWARE},
+  };
+
+  hlToConfigType hlToConfig = {
+      {HLMType::HWCPUCycles, PERF_COUNT_HW_CPU_CYCLES},
+      {HLMType::HWInstructions, PERF_COUNT_HW_INSTRUCTIONS},
+      {HLMType::HWCacheReferences, PERF_COUNT_HW_CACHE_REFERENCES},
+      {HLMType::HWCacheMisses, PERF_COUNT_HW_CACHE_MISSES},
+      {HLMType::HWBranchInstructions, PERF_COUNT_HW_BRANCH_INSTRUCTIONS},
+      {HLMType::HWStalledCyclesFrontend, PERF_COUNT_HW_STALLED_CYCLES_FRONTEND},
+      {HLMType::HWStalledCyclesBackend, PERF_COUNT_HW_STALLED_CYCLES_BACKEND},
+      {HLMType::HWRefCPUCycles, PERF_COUNT_HW_REF_CPU_CYCLES},
+  };
 
  public:
   Tracer() {}
-  uPtrBMeasure MakeMeasure(HLMeasureType hlType) override;
-  uPtrBMeasure MakeMeasure(std::vector<HLMeasureType> hlTypes) override;
+  uPtrBMeasure MakeMeasure(HLMType hlType) override;
+  uPtrBMeasure MakeMeasure(std::vector<HLMType> hlTypes) override;
 };
 
 class Measure : public ::MPerf::Measure {
