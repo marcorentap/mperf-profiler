@@ -41,22 +41,35 @@ void Measure::PerfEventOpen(std::string label, uint32_t type, uint64_t config) {
   fds.push_back(fd);
 }
 
-  void Measure::DoMeasure() {
-    memset(&result, 0, sizeof(result));
-    int ret = read(leader_fd, &result, sizeof(result));
-    if (ret < 0) {
-      exit(EXIT_FAILURE);
-    }
+void Measure::DoMeasure() {
+  memset(&result, 0, sizeof(result));
+  int ret = read(leader_fd, &result, sizeof(result));
+  if (ret < 0) {
+    exit(EXIT_FAILURE);
   }
-  json Measure::GetJSON() {
-    json j;
-    for (auto &item : labelToResultIndex) {
-      auto label = item.first;
-      auto index = item.second;
-      j[label] = result.values[index];
-    }
-    return j;
+}
+json Measure::GetJSON() {
+  json j;
+  for (auto &item : labelToResultIndex) {
+    auto label = item.first;
+    auto index = item.second;
+    j[label] = result.values[index];
   }
+  return j;
+}
+
+uPtrBMeasure Tracer::MakeMeasure(std::vector<HLMeasureType> hlTypes) {
+  uPtrLinuxMeasure ptr;
+  ptr.reset(new Measure());
+  for (auto &hlType : hlTypes) {
+    auto args = hlArgsMap[hlType];
+    auto label = std::get<0>(args);
+    auto type = std::get<1>(args);
+    auto config = std::get<2>(args);
+    ptr->PerfEventOpen(label, type, config);
+  }
+  return ptr;
+}
 
 std::unique_ptr<::MPerf::Measure> Tracer::MakeMeasure(HLMeasureType hlType) {
   using HLType = HLMeasureType;

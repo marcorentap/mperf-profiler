@@ -11,6 +11,7 @@ namespace MPerf {
 using json = nlohmann::json;
 
 enum class HLMeasureType {
+  // These will be deprecated
   ProcName,
   ProcCounters,
   MemorySize,
@@ -22,7 +23,17 @@ enum class HLMeasureType {
   CacheDTLB,
   CacheITLB,
   CacheBPU,
-  CacheNode
+  CacheNode,
+
+  // Fine grained types from now on
+  HWCPUCycles,
+  HWInstructions,
+  HWCacheReferences,
+  HWCacheMisses,
+  HWBranchInstructions,
+  HWStalledCyclesFrontend,
+  HWStalledCyclesBackend,
+  HWRefCPUCycles,
 };
 
 namespace Tracers {
@@ -37,9 +48,9 @@ class Measure {
     return j;
   }
 };
-class Tracer {
-  using bMeasurePtr = std::unique_ptr<Measure>;
+using bMeasurePtr = std::unique_ptr<Measure>;
 
+class Tracer {
  public:
   virtual bMeasurePtr MakeMeasure(HLMeasureType hlType) {
     bMeasurePtr ptr;

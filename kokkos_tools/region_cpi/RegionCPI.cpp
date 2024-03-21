@@ -27,7 +27,8 @@ extern "C" void kokkosp_init_library(const int loadSeq,
                                      void *deviceInfo) {
   // Measure processor events with linux's perf
   auto perfTracer = PerfTracer();
-  cpuEventMeasure = perfTracer.MakeMeasure(MPerf::HLMeasureType::ProcCounters);
+  // cpuEventMeasure = perfTracer.MakeMeasure(MPerf::HLMeasureType::ProcCounters);
+  cpuEventMeasure = perfTracer.MakeMeasure({MPerf::HLMeasureType::HWInstructions, MPerf::HLMeasureType::HWCPUCycles});
   outputFile.open(outputFileName, std::ofstream::trunc);
   outputTraceFile.open(outputTraceFileName, std::ofstream::trunc);
 }
