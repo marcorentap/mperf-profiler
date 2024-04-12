@@ -1,1 +1,1 @@
-add_library(MPerfCore OBJECT MPerf.cpp)
+add_library(mperfprofiler SHARED MPerf.cpp)
