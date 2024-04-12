@@ -7,12 +7,6 @@ find_package(Kokkos REQUIRED)
 
 add_subdirectory(core)
 target_include_directories(mperfprofiler SYSTEM PRIVATE include)
-set(MPERF_PUBLIC_HEADERS
-  "include/MPerf/Core.hpp"
-  "include/MPerf/Lib/Json.hpp"
-  "include/MPerf/Tracers/LinuxPerf.hpp"
-)
-set_target_properties(mperfprofiler PROPERTIES PUBLIC_HEADER "${MPERF_PUBLIC_HEADERS}")
 
 set(KOKKOS_TOOLS)
 set(TRACERS)
@@ -47,6 +41,6 @@ LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
 install(TARGETS ${KOKKOS_TOOLS} mperfprofiler)
-install(DIRECTORY include
+install(DIRECTORY include/
   DESTINATION include
 )
