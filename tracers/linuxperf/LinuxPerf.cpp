@@ -58,6 +58,10 @@ json Measure::GetJSON() {
   return j;
 }
 
+
+uPtrBMeasure Tracer::MakeMeasure(HLMType hlType) {
+  return MakeMeasure(std::vector<HLMeasureType>({hlType}));
+};
 uPtrBMeasure Tracer::MakeMeasure(std::vector<HLMeasureType> hlTypes) {
   uPtrLinuxMeasure ptr;
   ptr.reset(new Measure());
@@ -67,33 +71,6 @@ uPtrBMeasure Tracer::MakeMeasure(std::vector<HLMeasureType> hlTypes) {
     auto config = hlToConfig[hlType];
     ptr->PerfEventOpen(label, type, config);
   }
-  return ptr;
-}
-
-std::unique_ptr<::MPerf::Measure> Tracer::MakeMeasure(HLMeasureType hlType) {
-  using HLType = HLMeasureType;
-  std::unique_ptr<::MPerf::Measure> ptr;
-
-  if (hlType == HLMeasureType::ProcCounters) {
-    ptr.reset(new CPUEvents());
-  } else if (hlType == HLMeasureType::CacheL1D) {
-    ptr.reset(new L1DCacheEvents());
-  } else if (hlType == HLMeasureType::CacheL1I) {
-    ptr.reset(new L1ICacheEvents());
-  } else if (hlType == HLMeasureType::CacheLL) {
-    ptr.reset(new LLCacheEvents());
-  } else if (hlType == HLMeasureType::CacheDTLB) {
-    ptr.reset(new DTLBCacheEvents());
-  } else if (hlType == HLMeasureType::CacheITLB) {
-    ptr.reset(new ITLBCacheEvents());
-  } else if (hlType == HLMeasureType::CacheBPU) {
-    ptr.reset(new BPUCacheEvents());
-  } else if (hlType == HLMeasureType::CacheNode) {
-    ptr.reset(new NodeCacheEvents());
-  } else {
-    throw std::invalid_argument("Unimplemented HLType");
-  }
-
   return ptr;
 }
 

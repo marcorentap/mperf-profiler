@@ -11,21 +11,6 @@ namespace MPerf {
 using json = nlohmann::json;
 
 enum class HLMeasureType {
-  // These will be deprecated
-  ProcName,
-  ProcCounters,
-  MemorySize,
-  CacheSize,
-  CacheCounters,
-  CacheL1D,
-  CacheL1I,
-  CacheLL,
-  CacheDTLB,
-  CacheITLB,
-  CacheBPU,
-  CacheNode,
-
-  // Fine grained types from now on
   HWCPUCycles,
   HWInstructions,
   HWCacheReferences,
@@ -34,6 +19,52 @@ enum class HLMeasureType {
   HWStalledCyclesFrontend,
   HWStalledCyclesBackend,
   HWRefCPUCycles,
+
+  HWCacheL1DReadAccess,
+  HWCacheL1DReadMiss,
+  HWCacheL1DWriteAccess,
+  HWCacheL1DPrefetchAccess,
+  HWCacheL1DPrefetchMiss,
+
+  HWCacheL1IReadAccess,
+  HWCacheL1IReadMiss,
+  HWCacheL1IWriteAccess,
+  HWCacheL1IPrefetchAccess,
+  HWCacheL1IPrefetchMiss,
+
+  HWCacheLLReadAccess,
+  HWCacheLLReadMiss,
+  HWCacheLLWriteAccess,
+  HWCacheLLPrefetchAccess,
+  HWCacheLLPrefetchMiss,
+
+  HWCacheDTLBReadAccess,
+  HWCacheDTLBReadMiss,
+  HWCacheDTLBWriteAccess,
+  HWCacheDTLBPrefetchAccess,
+  HWCacheDTLBPrefetchMiss,
+
+  HWCacheITLBReadAccess,
+  HWCacheITLBReadMiss,
+  HWCacheITLBWriteAccess,
+  HWCacheITLBPrefetchAccess,
+  HWCacheITLBPrefetchMiss,
+
+  HWCacheBPUReadAccess,
+  HWCacheBPUReadMiss,
+  HWCacheBPUWriteAccess,
+  HWCacheBPUPrefetchAccess,
+  HWCacheBPUPrefetchMiss,
+
+  HWCacheNodeReadAccess,
+  HWCacheNodeReadMiss,
+  HWCacheNodeWriteAccess,
+  HWCacheNodePrefetchAccess,
+  HWCacheNodePrefetchMiss,
+
+  SWPageFaults,
+  SWPageFaultsMin,
+  SWPageFaultsMaj,
 };
 
 namespace Tracers {

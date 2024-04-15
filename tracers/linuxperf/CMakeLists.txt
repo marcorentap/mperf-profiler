@@ -1,3 +1,3 @@
-add_library(LinuxPerfTracer OBJECT
+add_library(mperflinuxtracer SHARED
   LinuxPerf.cpp
 )
