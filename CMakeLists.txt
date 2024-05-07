@@ -6,41 +6,46 @@ project(MPerf LANGUAGES CXX)
 find_package(Kokkos REQUIRED)
 
 add_subdirectory(core)
-target_include_directories(mperfprofiler SYSTEM PRIVATE include)
+target_include_directories(MPerf SYSTEM
+  PUBLIC
+    $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
 
-set(KOKKOS_TOOLS)
 set(TRACERS)
 
 # MPerf Tracers
 add_subdirectory(tracers/linuxperf)
 list(APPEND TRACERS LinuxPerfTracer)
 
-# MPerf Kokkos Tools
-add_subdirectory(kokkos_tools/perf_proc)
-list(APPEND KOKKOS_TOOLS mkt_perf_proc)
-
-add_subdirectory(kokkos_tools/region_cpi)
-list(APPEND KOKKOS_TOOLS mkt_region_cpi)
-
-add_subdirectory(kokkos_tools/resource_vector)
-list(APPEND KOKKOS_TOOLS mkt_resource_vector)
-
-
-target_link_libraries(mperfprofiler ${TRACERS})
+target_link_libraries(MPerf ${TRACERS})
 foreach(TRACER IN LISTS TRACERS)
-  target_include_directories(${TRACER} SYSTEM PRIVATE include)
+  target_include_directories(${TRACER} SYSTEM 
+    PUBLIC
+      $<INSTALL_INTERFACE:include>
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  )
 endforeach()
 
-foreach(TOOL IN LISTS KOKKOS_TOOLS)
-  target_include_directories(${TOOL} SYSTEM PRIVATE include)
-  target_link_libraries(${TOOL} mperfprofiler ${TRACERS})
-endforeach()
-
-set_target_properties(${KOKKOS_TOOLS} PROPERTIES
-LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+# Install lib and headers
+install(
+  TARGETS MPerf ${TRACERS}
+  EXPORT MPerfConfig
+)
+install(
+  DIRECTORY include/
+  DESTINATION include
 )
 
-install(TARGETS ${KOKKOS_TOOLS} mperfprofiler)
-install(DIRECTORY include/
-  DESTINATION include
+# Export
+# export(
+#   TARGETS MPerf ${TRACERS}
+#   NAMESPACE MPerf::
+#   FILE ${CMAKE_CURRENT_BINARY_DIR}/MPerfConfig.cmake
+# )
+install(
+  EXPORT MPerfConfig
+  FILE MPerfConfig.cmake
+  NAMESPACE MPerf::
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/MPerf
 )

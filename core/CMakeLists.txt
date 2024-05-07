@@ -1,1 +1,1 @@
-add_library(mperfprofiler SHARED MPerf.cpp)
+add_library(MPerf SHARED MPerf.cpp)
