@@ -16,7 +16,11 @@ set(TRACERS)
 
 # MPerf Tracers
 add_subdirectory(tracers/linuxperf)
-list(APPEND TRACERS LinuxPerfTracer)
+add_subdirectory(tracers/cppchrono)
+list(APPEND TRACERS 
+  LinuxPerfTracer
+  CPPChronoTracer
+)
 
 target_link_libraries(MPerf ${TRACERS})
 foreach(TRACER IN LISTS TRACERS)
