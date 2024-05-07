@@ -34,66 +34,8 @@ class Tracer : public ::MPerf::Tracer {
  private:
   using hlConfigMapType =
       std::unordered_map<HLMType, std::tuple<std::string, uint32_t, uint64_t>>;
-  using hlToLabelType = std::unordered_map<HLMType, std::string>;
   using hlToTypeType = std::unordered_map<HLMType, uint32_t>;
   using hlToConfigType = std::unordered_map<HLMType, uint64_t>;
-
-  hlToLabelType hlTolabel = {
-      {HLMType::HWCPUCycles, "hw_cpu_cycles"},
-      {HLMType::HWInstructions, "hw_instructions"},
-      {HLMType::HWCacheReferences, "hw_cache_references"},
-      {HLMType::HWCacheMisses, "hw_cache_misses"},
-      {HLMType::HWBranchInstructions, "hw_branch_instructions"},
-      {HLMType::HWStalledCyclesFrontend, "hw_stalled_cycles_frontend"},
-      {HLMType::HWStalledCyclesBackend, "hw_stalled_cycles_backend"},
-      {HLMType::HWRefCPUCycles, "hw_ref_cpu_cycles"},
-
-      {HLMType::HWCacheL1DReadAccess, "hw_cache_l1d_read_access"},
-      {HLMType::HWCacheL1DReadMiss, "hw_cache_l1d_read_miss"},
-      {HLMType::HWCacheL1DWriteAccess, "hw_cache_l1d_write_access"},
-      {HLMType::HWCacheL1DPrefetchAccess, "hw_cache_l1d_prefetch_access"},
-      {HLMType::HWCacheL1DPrefetchMiss, "hw_cache_l1d_prefetch_miss"},
-
-      {HLMType::HWCacheL1IReadAccess, "hw_cache_l1i_read_access"},
-      {HLMType::HWCacheL1IReadMiss, "hw_cache_l1i_read_miss"},
-      {HLMType::HWCacheL1IWriteAccess, "hw_cache_l1i_write_access"},
-      {HLMType::HWCacheL1IPrefetchAccess, "hw_cache_l1i_prefetch_access"},
-      {HLMType::HWCacheL1IPrefetchMiss, "hw_cache_l1i_prefetch_miss"},
-
-      {HLMType::HWCacheLLReadAccess, "hw_cache_ll_read_access"},
-      {HLMType::HWCacheLLReadMiss, "hw_cache_ll_read_miss"},
-      {HLMType::HWCacheLLWriteAccess, "hw_cache_ll_write_access"},
-      {HLMType::HWCacheLLPrefetchAccess, "hw_cache_ll_prefetch_access"},
-      {HLMType::HWCacheLLPrefetchMiss, "hw_cache_ll_prefetch_miss"},
-
-      {HLMType::HWCacheDTLBReadAccess, "hw_cache_dtlb_read_access"},
-      {HLMType::HWCacheDTLBReadMiss, "hw_cache_dtlb_read_miss"},
-      {HLMType::HWCacheDTLBWriteAccess, "hw_cache_dtlb_write_access"},
-      {HLMType::HWCacheDTLBPrefetchAccess, "hw_cache_dtlb_prefetch_access"},
-      {HLMType::HWCacheDTLBPrefetchMiss, "hw_cache_dtlb_prefetch_miss"},
-
-      {HLMType::HWCacheITLBReadAccess, "hw_cache_itlb_read_access"},
-      {HLMType::HWCacheITLBReadMiss, "hw_cache_itlb_read_miss"},
-      {HLMType::HWCacheITLBWriteAccess, "hw_cache_itlb_write_access"},
-      {HLMType::HWCacheITLBPrefetchAccess, "hw_cache_itlb_prefetch_access"},
-      {HLMType::HWCacheITLBPrefetchMiss, "hw_cache_itlb_prefetch_miss"},
-
-      {HLMType::HWCacheBPUReadAccess, "hw_cache_bpu_read_access"},
-      {HLMType::HWCacheBPUReadMiss, "hw_cache_bpu_read_miss"},
-      {HLMType::HWCacheBPUWriteAccess, "hw_cache_bpu_write_access"},
-      {HLMType::HWCacheBPUPrefetchAccess, "hw_cache_bpu_prefetch_access"},
-      {HLMType::HWCacheBPUPrefetchMiss, "hw_cache_bpu_prefetch_miss"},
-
-      {HLMType::HWCacheNodeReadAccess, "hw_cache_node_read_access"},
-      {HLMType::HWCacheNodeReadMiss, "hw_cache_node_read_miss"},
-      {HLMType::HWCacheNodeWriteAccess, "hw_cache_node_write_access"},
-      {HLMType::HWCacheNodePrefetchAccess, "hw_cache_node_prefetch_access"},
-      {HLMType::HWCacheNodePrefetchMiss, "hw_cache_node_prefetch_miss"},
-
-      {HLMType::SWPageFaults, "sw_page_faults"},
-      {HLMType::SWPageFaultsMin, "sw_page_faults_min"},
-      {HLMType::SWPageFaultsMaj, "sw_page_faults_maj"},
-  };
 
   hlToTypeType hlToType = {
       {HLMType::HWCPUCycles, PERF_TYPE_HARDWARE},

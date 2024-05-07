@@ -1,5 +1,6 @@
 #include <err.h>
 
+#include <MPerf/Core.hpp>
 #include <MPerf/Tracers/LinuxPerf.hpp>
 #include <iostream>
 
@@ -63,10 +64,11 @@ uPtrBMeasure Tracer::MakeMeasure(HLMType hlType) {
   return MakeMeasure(std::vector<HLMeasureType>({hlType}));
 };
 uPtrBMeasure Tracer::MakeMeasure(std::vector<HLMeasureType> hlTypes) {
+  auto hlToLabel = HLTypeLabels;
   uPtrLinuxMeasure ptr;
   ptr.reset(new Measure());
   for (auto &hlType : hlTypes) {
-    auto label = hlTolabel[hlType];
+    auto label = hlToLabel[hlType];
     auto type = hlToType[hlType];
     auto config = hlToConfig[hlType];
     ptr->PerfEventOpen(label, type, config);
