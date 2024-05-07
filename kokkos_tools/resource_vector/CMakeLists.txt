@@ -1,1 +1,0 @@
-add_library(mkt_resource_vector SHARED ResourceVector.cpp)
