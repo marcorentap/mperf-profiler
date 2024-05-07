@@ -6,7 +6,6 @@
 #include <unistd.h>
 
 #include <MPerf/Core.hpp>
-#include <iostream>
 
 namespace MPerf {
 namespace Tracers {
@@ -311,6 +310,7 @@ class Measure : public ::MPerf::Measure {
  public:
   void PerfEventOpen(uint32_t type, uint64_t config);
   void PerfEventOpen(std::string label, uint32_t type, uint64_t config);
+  int GetOpenFDCount();
 
   ~Measure() {
     for (auto &fd : fds) {

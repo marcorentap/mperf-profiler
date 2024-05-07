@@ -1,11 +1,7 @@
 #include <err.h>
 
 #include <MPerf/Tracers/LinuxPerf.hpp>
-#include <cstdio>
-#include <stdexcept>
-
-#include "CPUEvents.hpp"
-#include "CacheEvents.hpp"
+#include <iostream>
 
 namespace MPerf {
 namespace Tracers {
@@ -56,6 +52,10 @@ json Measure::GetJSON() {
     j[label] = result.values[index];
   }
   return j;
+}
+
+int Measure::GetOpenFDCount() {
+  return fds.size();
 }
 
 
