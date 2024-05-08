@@ -16,8 +16,14 @@ void Measure::PerfEventOpen(uint32_t type, uint64_t config) {
 
 void Measure::PerfEventOpen(std::string label, uint32_t type, uint64_t config) {
   int fd;
-  perf_event_attr attr{
-      .type = type, .config = config, .read_format = PERF_FORMAT_GROUP};
+  perf_event_attr attr = {
+      .type = type,
+      .config = config,
+      .read_format = PERF_FORMAT_GROUP,
+      .exclude_kernel = 1,
+      .exclude_hv = 1,
+      .exclude_idle = 1,
+  };
 
   if (fds.size() == 0) {
     fd = perf_event_open(&attr, getpid(), -1, -1, 0);
@@ -55,10 +61,7 @@ json Measure::GetJSON() {
   return j;
 }
 
-int Measure::GetOpenFDCount() {
-  return fds.size();
-}
-
+int Measure::GetOpenFDCount() { return fds.size(); }
 
 uPtrBMeasure Tracer::MakeMeasure(HLMType hlType) {
   return MakeMeasure(std::vector<HLMeasureType>({hlType}));
