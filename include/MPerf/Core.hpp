@@ -69,7 +69,7 @@ enum class HLMeasureType {
 };
 
 using HLTypeLabelMapType = std::unordered_map<HLMeasureType, std::string>;
-HLTypeLabelMapType HLTypeLabels = {
+static HLTypeLabelMapType HLTypeLabels = {
     {HLMeasureType::Time, "time"},
     {HLMeasureType::HWCPUCycles, "hw_cpu_cycles"},
     {HLMeasureType::HWInstructions, "hw_instructions"},
