@@ -1,4 +1,5 @@
 #include <err.h>
+#include <sys/ioctl.h>
 
 #include <MPerf/Core.hpp>
 #include <MPerf/Tracers/LinuxPerf.hpp>
@@ -51,8 +52,17 @@ void Measure::DoMeasure() {
     exit(EXIT_FAILURE);
   }
 }
+
+void Measure::ResetCounters() {
+  // Reset counters before measuring
+  for (auto fd : fds) {
+    ioctl(fd, PERF_EVENT_IOC_RESET, PERF_IOC_FLAG_GROUP);
+  }
+}
+
 json Measure::GetJSON() {
   json j;
+
   for (auto &item : labelToResultIndex) {
     auto label = item.first;
     auto index = item.second;

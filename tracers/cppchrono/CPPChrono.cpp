@@ -27,13 +27,17 @@ uPtrBMeasure Tracer::MakeMeasure(HLMType hlType) {
   return ptr;
 }
 
+
+Measure::Measure() {
+  creationTime = cppclock::now();
+}
 void Measure::DoMeasure() { result = cppclock::now(); }
 
 json Measure::GetJSON() {
   json j;
-  auto time = result.time_since_epoch().count();
+  auto timeDelta = result - creationTime;
   auto label = HLTypeLabels.at(HLMeasureType::Time);
-  j[label] = time;
+  j[label] = timeDelta.count();
   return j;
 }
 

@@ -24,9 +24,10 @@ class Measure : public ::MPerf::Measure {
   using cppclock = std::chrono::steady_clock;
   using time_point = std::chrono::time_point<cppclock, cppclock::duration>;
   using display_unit = std::chrono::nanoseconds;
-  time_point result;
+  time_point result, creationTime;
 
  public:
+  Measure();
   virtual void DoMeasure();
   virtual json GetJSON();
 };

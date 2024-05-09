@@ -244,15 +244,16 @@ class Measure : public ::MPerf::Measure {
     std::array<uint64_t, 64> values;  // Allow maximum of 64 events per
                                       // group and per measure
   } result;
-  std::vector<int> fds;
   // For use in fd and result.values
   std::unordered_map<std::string, int> labelToResultIndex;
   int leader_fd;
 
  public:
+  std::vector<int> fds;
   void PerfEventOpen(uint32_t type, uint64_t config);
   void PerfEventOpen(std::string label, uint32_t type, uint64_t config);
   int GetOpenFDCount();
+  void ResetCounters();
 
   ~Measure() {
     for (auto &fd : fds) {
