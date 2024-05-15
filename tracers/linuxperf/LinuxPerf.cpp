@@ -20,18 +20,14 @@ void Measure::PerfEventOpen(std::string label, uint32_t type, uint64_t config) {
   perf_event_attr attr = {
       .type = type,
       .config = config,
-      .read_format = PERF_FORMAT_GROUP,
+      // .read_format = PERF_FORMAT_GROUP,
+      .inherit = 1,
       .exclude_kernel = 1,
       .exclude_hv = 1,
       .exclude_idle = 1,
   };
 
-  if (fds.size() == 0) {
-    fd = perf_event_open(&attr, getpid(), -1, -1, 0);
-    leader_fd = fd;
-  } else {
-    fd = perf_event_open(&attr, getpid(), -1, leader_fd, 0);
-  }
+  fd = perf_event_open(&attr, getpid(), -1, -1, 0);
 
   // Skip if event not available
   if (fd < 0) {
@@ -43,13 +39,16 @@ void Measure::PerfEventOpen(std::string label, uint32_t type, uint64_t config) {
 
   labelToResultIndex[label] = fds.size();
   fds.push_back(fd);
+  results.push_back({.value = 0,});
 }
 
 void Measure::DoMeasure() {
-  memset(&result, 0, sizeof(result));
-  int ret = read(leader_fd, &result, sizeof(result));
-  if (ret < 0) {
-    exit(EXIT_FAILURE);
+  for (int i = 0; i < fds.size(); i++) {
+    int fd = fds.at(i);
+    int ret = read(fd, &results.at(i), sizeof(ReadFormat));
+    if (ret < 0) {
+      exit(EXIT_FAILURE);
+    }
   }
 }
 
@@ -66,7 +65,7 @@ json Measure::GetJSON() {
   for (auto &item : labelToResultIndex) {
     auto label = item.first;
     auto index = item.second;
-    j[label] = result.values[index];
+    j[label] = results.at(index).value;
   }
   return j;
 }

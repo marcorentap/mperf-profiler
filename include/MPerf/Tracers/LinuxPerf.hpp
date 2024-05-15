@@ -240,13 +240,12 @@ class Measure : public ::MPerf::Measure {
     uint64_t config;
   };
   struct ReadFormat {
-    uint64_t nr;                      // Number of events
-    std::array<uint64_t, 64> values;  // Allow maximum of 64 events per
-                                      // group and per measure
-  } result;
+      uint64_t value;
+  };
+  
   // For use in fd and result.values
   std::unordered_map<std::string, int> labelToResultIndex;
-  int leader_fd;
+  std::vector<ReadFormat> results;
 
  public:
   std::vector<int> fds;
