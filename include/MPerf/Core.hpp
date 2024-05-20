@@ -132,6 +132,7 @@ namespace Base {
 class Measure {
  public:
   Measure() {}
+  virtual void Reset() {}
   virtual void DoMeasure() {}
   virtual json GetJSON() {
     json j;

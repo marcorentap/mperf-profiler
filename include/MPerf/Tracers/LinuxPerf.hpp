@@ -253,7 +253,6 @@ class Measure : public ::MPerf::Measure {
   void PerfEventOpen(uint32_t type, uint64_t config);
   void PerfEventOpen(std::string label, uint32_t type, uint64_t config);
   int GetOpenFDCount();
-  void ResetCounters();
 
   ~Measure() {
     for (auto &fd : fds) {
@@ -261,6 +260,7 @@ class Measure : public ::MPerf::Measure {
     }
   }
 
+  virtual void Reset();
   virtual void DoMeasure();
   virtual json GetJSON();
 };

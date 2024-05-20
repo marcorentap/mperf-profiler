@@ -53,7 +53,7 @@ void Measure::DoMeasure() {
   }
 }
 
-void Measure::ResetCounters() {
+void Measure::Reset() {
   // Reset counters before measuring
   for (auto fd : fds) {
     ioctl(fd, PERF_EVENT_IOC_RESET, PERF_IOC_FLAG_GROUP);
