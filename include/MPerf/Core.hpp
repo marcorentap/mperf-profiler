@@ -24,18 +24,21 @@ enum class HLMeasureType {
   HWCacheL1DReadAccess,
   HWCacheL1DReadMiss,
   HWCacheL1DWriteAccess,
+  HWCacheL1DWriteMiss,
   HWCacheL1DPrefetchAccess,
   HWCacheL1DPrefetchMiss,
 
   HWCacheL1IReadAccess,
   HWCacheL1IReadMiss,
   HWCacheL1IWriteAccess,
+  HWCacheL1IWriteMiss,
   HWCacheL1IPrefetchAccess,
   HWCacheL1IPrefetchMiss,
 
   HWCacheLLReadAccess,
   HWCacheLLReadMiss,
   HWCacheLLWriteAccess,
+  HWCacheLLWriteMiss,
   HWCacheLLPrefetchAccess,
   HWCacheLLPrefetchMiss,
 
@@ -83,6 +86,7 @@ static HLTypeLabelMapType HLTypeLabels = {
     {HLMeasureType::HWCacheL1DReadAccess, "hw_cache_l1d_read_access"},
     {HLMeasureType::HWCacheL1DReadMiss, "hw_cache_l1d_read_miss"},
     {HLMeasureType::HWCacheL1DWriteAccess, "hw_cache_l1d_write_access"},
+    {HLMeasureType::HWCacheL1DWriteMiss, "hw_cache_l1d_write_miss"},
     {HLMeasureType::HWCacheL1DPrefetchAccess, "hw_cache_l1d_prefetch_access"},
     {HLMeasureType::HWCacheL1DPrefetchMiss, "hw_cache_l1d_prefetch_miss"},
 
@@ -95,6 +99,7 @@ static HLTypeLabelMapType HLTypeLabels = {
     {HLMeasureType::HWCacheLLReadAccess, "hw_cache_ll_read_access"},
     {HLMeasureType::HWCacheLLReadMiss, "hw_cache_ll_read_miss"},
     {HLMeasureType::HWCacheLLWriteAccess, "hw_cache_ll_write_access"},
+    {HLMeasureType::HWCacheLLWriteMiss, "hw_cache_ll_write_miss"},
     {HLMeasureType::HWCacheLLPrefetchAccess, "hw_cache_ll_prefetch_access"},
     {HLMeasureType::HWCacheLLPrefetchMiss, "hw_cache_ll_prefetch_miss"},
 
