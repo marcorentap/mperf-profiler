@@ -17,9 +17,11 @@ set(TRACERS)
 # MPerf Tracers
 add_subdirectory(tracers/linuxperf)
 add_subdirectory(tracers/cppchrono)
+add_subdirectory(tracers/libpfm4)
 list(APPEND TRACERS 
   LinuxPerfTracer
   CPPChronoTracer
+  LibPFM4Tracer
 )
 
 target_link_libraries(MPerf ${TRACERS})

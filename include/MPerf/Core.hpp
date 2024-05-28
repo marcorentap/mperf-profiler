@@ -66,6 +66,12 @@ enum class HLMeasureType {
   SWPageFaults,
   SWPageFaultsMin,
   SWPageFaultsMaj,
+
+  HWCycleStallsTotal,
+  HWCycleStallsL1DMiss,
+  HWCycleStallsL2Miss,
+  HWCycleStallsL3Miss,
+  HWCycleStallsMemAny,
 };
 
 using HLTypeLabelMapType = std::unordered_map<HLMeasureType, std::string>;
@@ -125,6 +131,12 @@ static HLTypeLabelMapType HLTypeLabels = {
     {HLMeasureType::SWPageFaults, "sw_page_faults"},
     {HLMeasureType::SWPageFaultsMin, "sw_page_faults_min"},
     {HLMeasureType::SWPageFaultsMaj, "sw_page_faults_maj"},
+
+    {HLMeasureType::HWCycleStallsTotal, "hw_cycle_stalls_total"},
+    {HLMeasureType::HWCycleStallsL1DMiss, "hw_cycle_stalls_l1d_miss"},
+    {HLMeasureType::HWCycleStallsL2Miss, "hw_cycle_stalls_l2_miss"},
+    {HLMeasureType::HWCycleStallsL3Miss, "hw_cycle_stalls_l3_miss"},
+    {HLMeasureType::HWCycleStallsMemAny, "hw_cycle_stalls_mem_any"},
 };
 
 namespace Tracers {
