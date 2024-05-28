@@ -29,15 +29,17 @@ uPtrBMeasure Tracer::MakeMeasure(std::vector<HLMType> hlTypes) {
 }
 
 uPtrBMeasure Tracer::MakeMeasure(HLMType hlType) {
-  uPtrBMeasure ptr;
-  auto eventName = hlToEventName.at(hlType);
+  using uPtrPfmMeasure = std::unique_ptr<Tracers::LibPFM4::Measure>;
+  uPtrPfmMeasure ptr;
   ptr.reset(new Measure());
+  ptr->Open(hlType);
   return ptr;
 }
 
 Measure::Measure() {}
 
 void Measure::Open(HLMType hlType) {
+  this->hlType = hlType;
   int ret;
   auto eventName = hlToEventName.at(hlType);
 
@@ -65,12 +67,15 @@ void Measure::Open(HLMType hlType) {
 }
 
 void Measure::DoMeasure() {
-  read(fd, &result, sizeof(result));
+  int ret = read(fd, &result, sizeof(result));
+  if (ret < 0) {
+    err(EXIT_FAILURE, "mperf libpfm4 cannot read fd");
+  }
 }
 
 json Measure::GetJSON() {
   json j;
-  auto label = HLTypeLabels.at(HLMeasureType::Time);
+  auto label = HLTypeLabels.at(hlType);
   j[label] = result.value;
   return j;
 }

@@ -31,6 +31,7 @@ class Measure : public ::MPerf::Measure {
   } result;
   perf_event_attr attr;
   pfm_perf_encode_arg_t args;
+  HLMType hlType;
   char *fstr;
   int fd;
 
